@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Expert Visiteur - Score Global & Classement</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Be+Vietnam+Pro:wght@400;500&family=Source+Sans+3:wght@400;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&family=Source+Sans+3:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#d3e4d1",
+                        "on-background": "#1e1b15",
+                        "on-primary-container": "#715c57",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#eee7dd",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#f9dcd6",
+                        "tertiary-container": "#cddfea",
+                        "primary": "#6f5955",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#dcc0bb",
+                        "tertiary-fixed-dim": "#b7c9d4",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#d3e5f0",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#bacbb9",
+                        "surface": "#fff8f0",
+                        "tertiary": "#50616a",
+                        "surface-container": "#f4ede3",
+                        "surface-dim": "#e0d9cf",
+                        "primary-container": "#f3d6d0",
+                        "on-tertiary-fixed": "#0c1e26",
+                        "inverse-on-surface": "#f7f0e6",
+                        "on-tertiary-container": "#52636c",
+                        "surface-tint": "#6f5955",
+                        "on-secondary-fixed": "#111f13",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d6e7d4",
+                        "surface-container-low": "#faf3e9",
+                        "on-tertiary-fixed-variant": "#384952",
+                        "inverse-surface": "#33302a",
+                        "on-secondary-fixed-variant": "#3c4a3c",
+                        "on-surface": "#1e1b15",
+                        "on-primary-fixed": "#271814",
+                        "primary-fixed-dim": "#dcc0bb",
+                        "outline-variant": "#d3c3c0",
+                        "on-primary-fixed-variant": "#56423e",
+                        "background": "#fff8f0",
+                        "on-surface-variant": "#4f4442",
+                        "surface-bright": "#fff8f0",
+                        "on-error-container": "#93000a",
+                        "outline": "#817472",
+                        "on-secondary-container": "#576757",
+                        "surface-variant": "#e8e2d8",
+                        "surface-container-highest": "#e8e2d8",
+                        "secondary": "#536253"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-caps": ["Plus Jakarta Sans"],
+                        "annotation": ["Be Vietnam Pro"],
+                        "body-lg": ["\"Source Sans 3\""],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["\"Source Sans 3\""]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "label-caps": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                        "annotation": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #FAF3E9;
+            color: #1e1b15;
+            font-family: "Source Sans 3", sans-serif;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sketch-border {
+            position: relative;
+            border: 1px solid #817472;
+        }
+        .sketch-border::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: -2px;
+            bottom: -2px;
+            border: 1px solid rgba(129, 116, 114, 0.3);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .sunburst-animate {
+            transform-origin: center;
+            animation: rotate-sunburst 60s linear infinite;
+        }
+        @keyframes rotate-sunburst {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .pencil-circle {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 5C25 5 5 25 5 50s20 45 45 45 45-20 45-45S75 5 50 5z' fill='none' stroke='%23817472' stroke-width='1' stroke-dasharray='3 2'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .cross-hatch {
+            background-image: radial-gradient(#817472 0.5px, transparent 0.5px);
+            background-size: 4px 4px;
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body class="bg-surface-container-low min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-background border-b border-outline-variant sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-gutter py-4 max-w-container-max mx-auto">
+<div class="font-headline-lg text-headline-lg text-primary uppercase tracking-widest">
+                Expert Visiteur
+            </div>
+<nav class="hidden md:flex items-center space-gap-8 gap-x-8">
+<a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors duration-200" href="#">Domaine</a>
+<a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors duration-200" href="#">Critère</a>
+<a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors duration-200" href="#">Preuves</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-caps text-[10px]">
+                    Session 00:45:12
+                </div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Side/Horizontal Nav -->
+<div class="bg-surface-container-low border-b border-outline-variant overflow-x-auto">
+<div class="flex justify-center items-center px-gutter py-4 max-w-container-max mx-auto gap-2 min-w-max">
+<button class="flex flex-col items-center px-4 py-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all">
+<span class="material-symbols-outlined mb-1">filter_vintage</span>
+<span class="font-label-caps text-[10px]">Gouvernance</span>
+</button>
+<button class="flex flex-col items-center px-4 py-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all">
+<span class="material-symbols-outlined mb-1">waves</span>
+<span class="font-label-caps text-[10px]">Soin</span>
+</button>
+<button class="flex flex-col items-center px-4 py-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all">
+<span class="material-symbols-outlined mb-1">wb_sunny</span>
+<span class="font-label-caps text-[10px]">Patient</span>
+</button>
+<button class="flex flex-col items-center px-4 py-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all">
+<span class="material-symbols-outlined mb-1">shield</span>
+<span class="font-label-caps text-[10px]">Équipes</span>
+</button>
+<button class="flex flex-col items-center px-4 py-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all">
+<span class="material-symbols-outlined mb-1 text-primary">auto_awesome</span>
+<span class="font-label-caps text-[10px] text-primary">Qualité</span>
+</button>
+<button class="flex flex-col items-center px-4 py-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all">
+<span class="material-symbols-outlined mb-1">architecture</span>
+<span class="font-label-caps text-[10px]">Sécurité</span>
+</button>
+<button class="flex flex-col items-center px-4 py-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all">
+<span class="material-symbols-outlined mb-1">grain</span>
+<span class="font-label-caps text-[10px]">Environnement</span>
+</button>
+</div>
+</div>
+<!-- Main Content Grid -->
+<main class="max-w-container-max mx-auto px-gutter py-12">
+<!-- Header Section: Sunburst Progress -->
+<section class="flex flex-col items-center mb-16 text-center">
+<div class="relative w-64 h-64 flex items-center justify-center">
+<!-- Sunburst Background Decoration -->
+<div class="absolute inset-0 sunburst-animate opacity-20 text-primary">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<path d="M50 0 L52 48 L100 50 L52 52 L50 100 L48 52 L0 50 L48 48 Z" fill="currentColor"></path>
+<path d="M15 15 L48 48 L50 0 L52 48 L85 15 L52 50 L100 52 L52 52 L85 85 L50 52 L50 100 L48 52 L15 85 L48 50 L0 48 L48 48 Z" fill="currentColor" opacity="0.5"></path>
+</svg>
+</div>
+<!-- Main Circle -->
+<div class="relative z-10 w-48 h-48 rounded-full border-2 border-primary flex flex-col items-center justify-center bg-white shadow-inner">
+<span class="font-headline-lg text-headline-lg text-on-surface">82 / 100</span>
+<span class="font-label-caps text-secondary mt-1">Accrédité</span>
+<div class="absolute -bottom-4 bg-secondary text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">
+                        Score Global
+                    </div>
+</div>
+</div>
+<div class="mt-8 max-w-lg">
+<h1 class="font-headline-md text-headline-md mb-2">Performance Globale de l'Établissement</h1>
+<p class="font-body-md text-on-surface-variant">Analyse consolidée des sept domaines d'évaluation pour le cycle d'accréditation 2024.</p>
+</div>
+</section>
+<!-- Middle Section: Spider Chart & Details -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+<!-- Radar Chart (Visual representation) -->
+<div class="lg:col-span-7 sketch-border bg-white p-8 rounded-lg">
+<h3 class="font-label-caps text-label-caps text-primary mb-6">Répartition par Domaines</h3>
+<div class="relative aspect-square max-w-md mx-auto">
+<!-- Art Deco Radar Chart Placeholder -->
+<svg class="w-full h-full drop-shadow-sm" viewbox="0 0 400 400">
+<!-- Concentric circles -->
+<circle cx="200" cy="200" fill="none" r="180" stroke="#d3c3c0" stroke-dasharray="4 4" stroke-width="0.5"></circle>
+<circle cx="200" cy="200" fill="none" r="140" stroke="#d3c3c0" stroke-dasharray="4 4" stroke-width="0.5"></circle>
+<circle cx="200" cy="200" fill="none" r="100" stroke="#d3c3c0" stroke-dasharray="4 4" stroke-width="0.5"></circle>
+<circle cx="200" cy="200" fill="none" r="60" stroke="#d3c3c0" stroke-dasharray="4 4" stroke-width="0.5"></circle>
+<!-- Axis lines -->
+<g stroke="#d3c3c0" stroke-width="1">
+<line x1="200" x2="200" y1="20" y2="380"></line>
+<line x1="20" x2="380" y1="200" y2="200"></line>
+<line x1="72" x2="328" y1="72" y2="328"></line>
+<line x1="328" x2="72" y1="72" y2="328"></line>
+</g>
+<!-- Data Polygon (Pastel Blush/Sage) -->
+<polygon fill="rgba(243, 214, 208, 0.4)" points="200,60 310,130 340,240 220,350 90,320 50,200 110,90" stroke="#6f5955" stroke-width="2"></polygon>
+<!-- Labels (Static) -->
+<text class="text-[10px] fill-on-surface-variant font-label-caps" text-anchor="middle" x="200" y="15">GOUVERNANCE</text>
+<text class="text-[10px] fill-on-surface-variant font-label-caps" text-anchor="start" x="360" y="130">SOIN</text>
+<text class="text-[10px] fill-on-surface-variant font-label-caps" text-anchor="start" x="370" y="270">PATIENT</text>
+<text class="text-[10px] fill-on-surface-variant font-label-caps" text-anchor="middle" x="200" y="395">ÉQUIPES</text>
+<text class="text-[10px] fill-on-surface-variant font-label-caps" text-anchor="end" x="30" y="270">QUALITÉ</text>
+<text class="text-[10px] fill-on-surface-variant font-label-caps" text-anchor="end" x="30" y="130">SÉCURITÉ</text>
+</svg>
+<!-- Marginalia Annotations -->
+<div class="absolute top-10 right-0 font-annotation text-annotation text-primary italic transform rotate-6">
+                        Excellente gestion de la gouvernance !
+                    </div>
+</div>
+</div>
+<!-- Side Cards: Classification & Warnings -->
+<div class="lg:col-span-5 space-y-6">
+<!-- Classification Card -->
+<div class="sketch-border bg-surface p-6 rounded-lg relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl">verified</span>
+</div>
+<h4 class="font-label-caps text-label-caps text-primary mb-4">Statut d'Accréditation</h4>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-3xl font-headline-md text-on-surface">Accrédité</span>
+<span class="text-on-surface-variant font-body-md text-sm">(75 - 89 pts)</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-6">
+                        L'établissement présente un niveau de qualité élevé. Des améliorations ciblées sont recommandées pour atteindre l'excellence.
+                    </p>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-xs font-label-caps border-b border-outline-variant pb-2">
+<span>Excellence</span>
+<span>> 90 pts</span>
+</div>
+<div class="flex justify-between items-center text-xs font-label-caps border-b border-primary pb-2 text-primary font-bold">
+<span>Accrédité</span>
+<span>75 - 89 pts</span>
+</div>
+<div class="flex justify-between items-center text-xs font-label-caps border-b border-outline-variant pb-2 text-on-surface-variant opacity-50">
+<span>Sous réserve</span>
+<span>50 - 74 pts</span>
+</div>
+</div>
+</div>
+<!-- Warning Card -->
+<div class="bg-error-container text-on-error-container p-6 rounded-lg border border-error/20 flex gap-4 items-start relative">
+<span class="material-symbols-outlined text-error">warning</span>
+<div>
+<h5 class="font-bold text-sm uppercase tracking-wider mb-1">Seuil Critique</h5>
+<p class="font-body-md text-sm">
+                            Avertissement : Le domaine <strong>'Qualité et sécurité des soins'</strong> est proche du seuil critique (50%). Une vigilance particulière est requise.
+                        </p>
+</div>
+<!-- Sketch Annotation -->
+<div class="absolute -bottom-8 -left-2 transform -rotate-2">
+<svg height="40" viewbox="0 0 120 40" width="120">
+<path d="M10 30 Q 30 5 60 15 T 110 5" fill="none" stroke="#ba1a1a" stroke-linecap="round" stroke-width="1.5"></path>
+<path d="M105 0 L110 5 L103 10" fill="none" stroke="#ba1a1a" stroke-linecap="round" stroke-width="1.5"></path>
+</svg>
+<span class="font-annotation text-xs text-error block -mt-2 ml-4">À surveiller de près</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="mt-24 flex flex-col md:flex-row items-center justify-between gap-8 border-t border-outline-variant pt-12">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<div class="w-12 h-12 rounded-full border border-outline flex items-center justify-center">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<div class="font-label-caps text-xs">Dernière mise à jour</div>
+<div class="font-body-md">14 Mai 2024 - 10:24</div>
+</div>
+</div>
+<button class="relative group">
+<!-- Sketchbook button style -->
+<div class="absolute inset-0 bg-primary opacity-10 rounded-lg transform group-hover:rotate-1 transition-transform"></div>
+<div class="relative bg-white border-2 border-primary text-primary px-10 py-4 rounded-lg font-headline-md text-lg flex items-center gap-4 hover:bg-primary hover:text-white transition-all">
+                    Exporter le rapport PDF
+                    <span class="material-symbols-outlined">arrow_right_alt</span>
+</div>
+<!-- Hand-drawn arrow annotation -->
+<div class="absolute -right-16 top-1/2 -translate-y-1/2 hidden lg:block">
+<svg height="40" viewbox="0 0 60 40" width="60">
+<path d="M0 20 C 10 10, 30 10, 50 20" fill="none" stroke="#6f5955" stroke-width="1.5"></path>
+<path d="M45 15 L50 20 L45 25" fill="none" stroke="#6f5955" stroke-width="1.5"></path>
+</svg>
+<span class="font-annotation text-xs italic text-primary absolute top-0 left-4">Prêt !</span>
+</div>
+</button>
+</div>
+</main>
+<!-- Footer Space -->
+<div class="h-24"></div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter py-2 bg-surface-container-highest border-t border-outline-variant shadow-md">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="font-label-caps text-[10px]">Précédent</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-6 py-2 transition-transform active:scale-90 duration-150 shadow-sm">
+<span class="material-symbols-outlined">view_carousel</span>
+<span class="font-label-caps text-[10px]">Aperçu</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">star</span>
+<span class="font-label-caps text-[10px]">Favoris</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="font-label-caps text-[10px]">Notes</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+<span class="font-label-caps text-[10px]">Suivant</span>
+</button>
+</nav>
+<!-- Decorative Elements (Marginalia) -->
+<div class="fixed top-32 left-8 opacity-10 pointer-events-none hidden xl:block">
+<div class="w-24 h-24 cross-hatch rounded-full border border-primary"></div>
+</div>
+<div class="fixed bottom-32 right-8 opacity-10 pointer-events-none hidden xl:block">
+<svg height="100" viewbox="0 0 100 100" width="100">
+<circle cx="50" cy="50" fill="none" r="40" stroke="#6f5955" stroke-dasharray="10 5" stroke-width="1"></circle>
+<path d="M50 10 L50 90 M10 50 L90 50" stroke="#6f5955" stroke-width="0.5"></path>
+</svg>
+</div>
+<script>
+        // Simple micro-interaction for the PDF button
+        document.querySelector('button.relative.group').addEventListener('click', function() {
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+                alert('Génération du rapport PDF en cours...');
+            }, 150);
+        });
+
+        // Horizontal Nav active state logic
+        const navButtons = document.querySelectorAll('.bg-surface-container-low button');
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                navButtons.forEach(b => {
+                    b.classList.remove('bg-primary-container', 'text-on-primary-container', 'font-bold');
+                    b.querySelector('span').classList.remove('text-primary');
+                });
+                btn.classList.add('bg-primary-container', 'text-on-primary-container', 'font-bold', 'rounded-lg');
+            });
+        });
+    </script>
+</body></html>

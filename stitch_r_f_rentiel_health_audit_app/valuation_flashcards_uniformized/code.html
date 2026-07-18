@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Source+Sans+3:wght@400;600&amp;family=Be+Vietnam+Pro:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .pencil-border {
+            border: 1px solid #817472;
+            position: relative;
+        }
+        .pencil-border::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: -2px;
+            bottom: -2px;
+            border: 1px solid #817472;
+            opacity: 0.3;
+            pointer-events: none;
+            border-radius: inherit;
+        }
+        .sketch-arrow-path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: draw 1s ease-out forwards;
+        }
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+        .active-ring {
+            box-shadow: 0 0 0 2px #fff8f0, 0 0 0 4px #817472;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#dcc0bb",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e8e2d8",
+                        "surface-dim": "#e0d9cf",
+                        "on-background": "#1e1b15",
+                        "on-tertiary-fixed": "#0c1e26",
+                        "outline-variant": "#d3c3c0",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#b7c9d4",
+                        "on-secondary-fixed-variant": "#3c4a3c",
+                        "on-primary-container": "#715c57",
+                        "inverse-on-surface": "#f7f0e6",
+                        "on-surface-variant": "#4f4442",
+                        "surface-container": "#f4ede3",
+                        "surface-container-high": "#eee7dd",
+                        "surface-container-highest": "#e8e2d8",
+                        "on-primary-fixed": "#271814",
+                        "tertiary": "#50616a",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#dcc0bb",
+                        "on-secondary-fixed": "#111f13",
+                        "surface-bright": "#fff8f0",
+                        "outline": "#817472",
+                        "surface-tint": "#6f5955",
+                        "on-secondary-container": "#576757",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d3e4d1",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#384952",
+                        "background": "#fff8f0",
+                        "on-tertiary-container": "#52636c",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#f9dcd6",
+                        "secondary": "#536253",
+                        "secondary-fixed": "#d6e7d4",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#56423e",
+                        "tertiary-container": "#cddfea",
+                        "on-surface": "#1e1b15",
+                        "secondary-fixed-dim": "#bacbb9",
+                        "primary-container": "#f3d6d0",
+                        "primary": "#6f5955",
+                        "surface": "#fff8f0",
+                        "inverse-surface": "#33302a",
+                        "tertiary-fixed": "#d3e5f0",
+                        "surface-container-low": "#faf3e9",
+                        "sage": "#CBDCC9",
+                        "powder-blue": "#D1E3F3",
+                        "warm-gold": "#F3E5AB",
+                        "dusty-rose": "#E9C0B9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-caps": ["Plus Jakarta Sans"],
+                        "annotation": ["Be Vietnam Pro"],
+                        "body-lg": ["Source Sans 3"],
+                        "body-md": ["Source Sans 3"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "label-caps": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                        "annotation": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col selection:bg-primary-container">
+<header class="fixed top-0 left-0 right-0 z-50 bg-background border-b border-outline-variant">
+<div class="max-w-container-max mx-auto px-gutter py-4 flex justify-between items-center">
+<div class="flex items-center gap-6">
+<h1 class="font-headline-lg text-headline-lg text-primary uppercase tracking-widest">Expert Visiteur</h1>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Domaine</a>
+<a class="font-label-caps text-label-caps text-primary font-bold border-b-2 border-primary pb-1" href="#">Critère</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">Preuves</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">help</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">account_circle</span>
+</div>
+</div>
+<!-- Horizontal Domain Navigation from Screen 2/3 -->
+<div class="bg-surface-container-low border-t border-outline-variant">
+<div class="max-w-container-max mx-auto px-gutter">
+<nav class="flex items-center gap-2 py-3 overflow-x-auto no-scrollbar scroll-smooth">
+<a class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-bold whitespace-nowrap transition-transform shrink-0" href="#">
+<span class="material-symbols-outlined text-[20px]">account_balance</span>
+<span class="font-label-caps text-[10px] tracking-wider uppercase">GOUVERNANCE</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+<span class="material-symbols-outlined text-[20px]">medication</span>
+<span class="font-label-caps text-[10px] tracking-wider uppercase">SOIN</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+<span class="material-symbols-outlined text-[20px]">person</span>
+<span class="font-label-caps text-[10px] tracking-wider uppercase">PATIENT</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+<span class="font-label-caps text-[10px] tracking-wider uppercase">ÉQUIPES</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+<span class="font-label-caps text-[10px] tracking-wider uppercase">QUALITÉ</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+<span class="font-label-caps text-[10px] tracking-wider uppercase">SÉCURITÉ</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+<span class="material-symbols-outlined text-[20px]">forest</span>
+<span class="font-label-caps text-[10px] tracking-wider uppercase">ENVIRONNEMENT</span>
+</a>
+<div class="h-6 w-px bg-outline-variant mx-2 shrink-0"></div>
+<a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-label-caps text-[10px] tracking-wider uppercase">PARAMÈTRES</span>
+</a>
+</nav>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-40 pb-32 max-w-container-max mx-auto w-full px-gutter flex flex-col items-center relative overflow-hidden">
+<!-- Header Summary Section -->
+<div class="w-full max-w-2xl flex justify-between items-center mb-8 px-4">
+<div>
+<span class="font-label-caps text-label-caps text-primary block mb-1">PROGRÈS DOMAINE 1</span>
+<div class="text-headline-md font-headline-md">Critère 4 / 7</div>
+<p class="font-annotation text-annotation italic text-on-surface-variant">"Gouvernance &amp; Management"</p>
+</div>
+<div class="w-32 bg-surface-variant h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 57%;"></div>
+</div>
+</div>
+<!-- Central Flashcard UI -->
+<section class="w-full flex flex-col items-center justify-start py-4 relative">
+<!-- Sketch Marginalia: Back Arrow -->
+<div class="absolute left-0 top-1/2 -translate-y-1/2 hidden xl:block cursor-pointer group">
+<svg class="opacity-40 group-hover:opacity-100 transition-opacity" fill="none" height="40" viewbox="0 0 80 40" width="80">
+<path class="sketch-arrow-path" d="M70 20H10M10 20L25 10M10 20L25 30" stroke="#817472" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="font-annotation text-annotation block mt-2 -rotate-3 text-on-surface-variant">Précédent</span>
+</div>
+<!-- The Flashcard -->
+<div class="w-full max-w-2xl bg-surface-container-low rounded-[2rem] p-12 pencil-border shadow-sm flex flex-col items-center text-center relative overflow-hidden group">
+<!-- Sunburst Motif Decoration -->
+<div class="absolute top-6 right-6 opacity-20">
+<span class="material-symbols-outlined text-[48px]">wb_sunny</span>
+</div>
+<!-- Domain Emblem -->
+<div class="w-20 h-20 mb-8 flex items-center justify-center rounded-full border border-outline-variant bg-white/50">
+<span class="material-symbols-outlined text-[40px] text-primary">account_balance</span>
+</div>
+<div class="flex items-center gap-3 mb-4">
+<span class="font-label-caps text-label-caps px-3 py-0.5 border border-primary text-primary rounded-full uppercase tracking-widest">D1 · Gouvernance</span>
+<span class="font-label-caps text-label-caps px-3 py-0.5 bg-error-container text-on-error-container rounded-full">Obligatoire</span>
+</div>
+<h2 class="font-headline-md text-headline-md mb-6 max-w-md">Critère 4 — Politique qualité et sécurité des soins</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 leading-relaxed">
+                L'établissement définit une politique d'amélioration continue de la qualité et de la sécurité des soins, déclinée par secteur d'activité.
+            </p>
+<div class="flex items-center gap-4 mb-12">
+<span class="font-label-caps text-label-caps text-on-surface-variant">Poids du critère :</span>
+<span class="font-headline-md text-headline-md text-primary">4.0 pts</span>
+</div>
+<!-- Scoring Controls -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+<button class="group flex flex-col items-center gap-2 p-4 rounded-2xl bg-sage/40 hover:bg-sage/60 transition-all active:scale-95" onclick="this.classList.toggle('active-ring')">
+<span class="w-12 h-12 flex items-center justify-center rounded-full bg-sage font-bold text-lg text-on-secondary-container">A</span>
+<span class="font-label-caps text-label-caps">100%</span>
+</button>
+<button class="group flex flex-col items-center gap-2 p-4 rounded-2xl bg-powder-blue/40 hover:bg-powder-blue/60 transition-all active:scale-95">
+<span class="w-12 h-12 flex items-center justify-center rounded-full bg-powder-blue font-bold text-lg text-on-tertiary-container">B</span>
+<span class="font-label-caps text-label-caps">50%</span>
+</button>
+<button class="group flex flex-col items-center gap-2 p-4 rounded-2xl bg-warm-gold/40 hover:bg-warm-gold/60 transition-all active:scale-95">
+<span class="w-12 h-12 flex items-center justify-center rounded-full bg-warm-gold font-bold text-lg text-on-surface">C</span>
+<span class="font-label-caps text-label-caps">25%</span>
+</button>
+<button class="group flex flex-col items-center gap-2 p-4 rounded-2xl bg-dusty-rose/40 hover:bg-dusty-rose/60 transition-all active:scale-95">
+<span class="w-12 h-12 flex items-center justify-center rounded-full bg-dusty-rose font-bold text-lg text-on-error-container">D</span>
+<span class="font-label-caps text-label-caps">0%</span>
+</button>
+</div>
+</div>
+<!-- Sketch Marginalia: Next Arrow -->
+<div class="absolute right-0 top-1/2 -translate-y-1/2 hidden xl:block cursor-pointer group">
+<svg class="opacity-40 group-hover:opacity-100 transition-opacity" fill="none" height="40" viewbox="0 0 80 40" width="80">
+<path class="sketch-arrow-path" d="M10 20H70M70 20L55 10M70 20L55 30" stroke="#817472" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="font-annotation text-annotation block mt-2 rotate-3 text-on-surface-variant text-right">Suivant</span>
+</div>
+</section>
+<!-- Context Actions (Previously in Sidebar) -->
+<div class="flex flex-wrap justify-center gap-4 mt-8 w-full max-w-2xl">
+<button class="flex items-center gap-3 px-6 py-3 bg-surface-container-highest rounded-lg hover:bg-surface-variant transition-all text-left">
+<span class="material-symbols-outlined text-primary">add_a_photo</span>
+<span class="font-label-caps text-label-caps">Ajouter Preuve</span>
+</button>
+<button class="flex items-center gap-3 px-6 py-3 bg-surface-container-highest rounded-lg hover:bg-surface-variant transition-all text-left">
+<span class="material-symbols-outlined text-primary">sticky_note_2</span>
+<span class="font-label-caps text-label-caps">Note d'observation</span>
+</button>
+<button class="flex items-center gap-3 px-6 py-3 border border-error text-error rounded-lg hover:bg-error-container transition-all text-left group">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform" style="font-variation-settings: 'FILL' 1;">flag</span>
+<span class="font-label-caps text-label-caps font-bold">Signaler Non-conformité</span>
+</button>
+</div>
+</main>
+<!-- Deck Thumbnail Navigation Footer (Uniformized with other screens) -->
+<footer class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-highest border-t border-outline-variant shadow-lg backdrop-blur-md">
+<div class="max-w-container-max mx-auto px-gutter py-4">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase">Planche de l'audit : Domaine 1</span>
+<span class="font-annotation text-annotation italic text-on-surface-variant">4 critères complétés sur 7</span>
+</div>
+<div class="flex gap-3 h-12">
+<!-- Thumbnail Indicators -->
+<div class="flex-1 bg-sage rounded-md pencil-border flex items-center justify-center cursor-pointer hover:-translate-y-1 transition-transform group relative">
+<span class="text-[10px] font-bold text-on-secondary-container">1</span>
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Validé - A</div>
+</div>
+<div class="flex-1 bg-sage rounded-md pencil-border flex items-center justify-center cursor-pointer hover:-translate-y-1 transition-transform">
+<span class="text-[10px] font-bold text-on-secondary-container">2</span>
+</div>
+<div class="flex-1 bg-powder-blue rounded-md pencil-border flex items-center justify-center cursor-pointer hover:-translate-y-1 transition-transform">
+<span class="text-[10px] font-bold text-on-tertiary-container">3</span>
+</div>
+<div class="flex-1 bg-white ring-2 ring-primary ring-offset-2 rounded-md pencil-border flex items-center justify-center cursor-pointer scale-110 shadow-sm">
+<span class="text-[10px] font-bold text-primary">4</span>
+</div>
+<div class="flex-1 bg-surface-container-low border border-dashed border-outline-variant rounded-md flex items-center justify-center cursor-pointer hover:bg-white transition-colors">
+<span class="text-[10px] font-bold text-on-surface-variant">5</span>
+</div>
+<div class="flex-1 bg-surface-container-low border border-dashed border-outline-variant rounded-md flex items-center justify-center cursor-pointer hover:bg-white transition-colors">
+<span class="text-[10px] font-bold text-on-surface-variant">6</span>
+</div>
+<div class="flex-1 bg-surface-container-low border border-dashed border-outline-variant rounded-md flex items-center justify-center cursor-pointer hover:bg-white transition-colors">
+<span class="text-[10px] font-bold text-on-surface-variant">7</span>
+</div>
+</div>
+</div>
+<!-- Mobile Bottom Nav Fallback -->
+<div class="md:hidden flex justify-around py-2 bg-surface-container-highest border-t border-outline-variant">
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="font-label-caps text-label-caps text-[10px]">PRÉC.</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full p-2 scale-90">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="font-label-caps text-label-caps text-[10px]">NOTES</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined">arrow_forward</span>
+<span class="font-label-caps text-label-caps text-[10px]">SUIV.</span>
+</div>
+</div>
+</footer>
+<script>
+    // Simple Micro-interactions
+    document.querySelectorAll('button, a').forEach(el => {
+        el.addEventListener('click', function() {
+            this.classList.add('scale-95');
+            setTimeout(() => this.classList.remove('scale-95'), 100);
+        });
+    });
+
+    // Toggle Scoring Selection State (Visual only for prototype)
+    const scoreButtons = document.querySelectorAll('.grid button');
+    scoreButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            scoreButtons.forEach(b => b.classList.remove('active-ring'));
+            button.classList.add('active-ring');
+        });
+    });
+</script>
+</body></html>

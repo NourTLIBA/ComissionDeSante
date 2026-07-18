@@ -1,0 +1,368 @@
+<!DOCTYPE html><html class="light" lang="fr"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Source+Sans+3:wght@400;600&amp;family=Be+Vietnam+Pro:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#dcc0bb",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#e8e2d8",
+                    "surface-dim": "#e0d9cf",
+                    "on-background": "#1e1b15",
+                    "on-tertiary-fixed": "#0c1e26",
+                    "outline-variant": "#d3c3c0",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#b7c9d4",
+                    "on-secondary-fixed-variant": "#3c4a3c",
+                    "on-primary-container": "#715c57",
+                    "inverse-on-surface": "#f7f0e6",
+                    "on-primary-fixed": "#271814",
+                    "tertiary": "#50616a",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#dcc0bb",
+                    "on-secondary-fixed": "#111f13",
+                    "surface-bright": "#fff8f0",
+                    "outline": "#817472",
+                    "surface-tint": "#6f5955",
+                    "on-secondary-container": "#576757",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#d3e4d1",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#384952",
+                    "background": "#fff8f0",
+                    "on-tertiary-container": "#52636c",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#f9dcd6",
+                    "secondary": "#536253",
+                    "secondary-fixed": "#d6e7d4",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#56423e",
+                    "tertiary-container": "#cddfea",
+                    "on-surface": "#1e1b15",
+                    "secondary-fixed-dim": "#bacbb9",
+                    "primary-container": "#f3d6d0",
+                    "primary": "#6f5955",
+                    "surface": "#fff8f0",
+                    "inverse-surface": "#33302a",
+                    "tertiary-fixed": "#d3e5f0",
+                    "surface-container-low": "#faf3e9",
+                    "surface-container-highest": "#e8e2d8",
+                    "surface-container-high": "#eee7dd",
+                    "surface-container": "#f4ede3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "unit": "8px",
+                    "margin-mobile": "16px",
+                    "container-max": "1280px",
+                    "margin-desktop": "48px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "label-caps": ["Plus Jakarta Sans"],
+                    "annotation": ["Be Vietnam Pro"],
+                    "body-lg": ["Source Sans 3"],
+                    "body-md": ["Source Sans 3"],
+                    "headline-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "label-caps": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                    "annotation": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    }catch(_e){}</script></head><body class="font-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+
+<header class="bg-background border-b border-outline-variant w-full sticky top-0 z-40">
+    <div class="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
+        <div class="flex items-center gap-4">
+            <h1 class="font-headline-lg text-headline-lg text-primary uppercase tracking-widest">Expert Visiteur</h1>
+            <div class="h-8 w-px bg-outline-variant mx-2"></div>
+            <div class="hidden md:flex gap-6">
+                <a class="font-label-caps text-label-caps text-primary font-bold border-b-2 border-primary pb-1" href="#">Domaine</a>
+                <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Critère</a>
+                <a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Preuves</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            
+            <div class="flex gap-2">
+                <button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity">help</button>
+                <button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity">account_circle</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Horizontal Domain Navigation -->
+    <div class="bg-surface-container-low border-t border-outline-variant">
+        <div class="max-w-container-max mx-auto px-gutter">
+            <nav class="flex items-center gap-2 py-3 overflow-x-auto no-scrollbar scroll-smooth">
+                <a class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-bold whitespace-nowrap transition-transform shrink-0" href="#">
+                    <span class="material-symbols-outlined text-[20px]">account_balance</span>
+                    <span class="font-label-caps text-[10px] tracking-wider uppercase">GOUVERNANCE</span>
+                </a>
+                <a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+                    <span class="material-symbols-outlined text-[20px]">medication</span>
+                    <span class="font-label-caps text-[10px] tracking-wider uppercase">SOIN</span>
+                </a>
+                <a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+                    <span class="material-symbols-outlined text-[20px]">person</span>
+                    <span class="font-label-caps text-[10px] tracking-wider uppercase">PATIENT</span>
+                </a>
+                <a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+                    <span class="material-symbols-outlined text-[20px]">groups</span>
+                    <span class="font-label-caps text-[10px] tracking-wider uppercase">ÉQUIPES</span>
+                </a>
+                <a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+                    <span class="material-symbols-outlined text-[20px]">verified</span>
+                    <span class="font-label-caps text-[10px] tracking-wider uppercase">QUALITÉ</span>
+                </a>
+                <a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+                    <span class="material-symbols-outlined text-[20px]">security</span>
+                    <span class="font-label-caps text-[10px] tracking-wider uppercase">SÉCURITÉ</span>
+                </a>
+                <a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+                    <span class="material-symbols-outlined text-[20px]">eco</span>
+                    <span class="font-label-caps text-[10px] tracking-wider uppercase">ENVIRONNEMENT</span>
+                </a>
+                <div class="h-6 w-px bg-outline-variant mx-2 shrink-0"></div>
+                <a class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-all whitespace-nowrap shrink-0" href="#">
+                    <span class="material-symbols-outlined text-[20px]">settings</span>
+                    <span class="font-label-caps text-[10px] tracking-wider uppercase">PARAMÈTRES</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-container-max mx-auto px-gutter py-12 relative">
+    <!-- Marginalia elements -->
+    <div class="absolute -left-12 top-24 pointer-events-none hidden xl:block">
+        <span class="font-annotation text-annotation text-outline rotate-[-6deg] block">Note: Vérifier les ratios<br>SMR/MCO...</span>
+        <svg class="w-12 h-12 text-outline mt-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12h18m-6-6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </div>
+
+    <!-- Header Section -->
+    <section class="flex flex-col items-center text-center mb-16">
+        <div class="inline-flex items-center gap-3 bg-surface-container-low px-6 py-2 rounded-full pencil-border mb-6">
+            <span class="material-symbols-outlined text-[#D4AF37]" style="font-variation-settings: 'FILL' 1;">verified</span>
+            <span class="font-label-caps text-label-caps text-primary">Expert visiteur certifié — Autorité nationale d'accréditation</span>
+        </div>
+        <h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Initialisation de la Visite</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Veuillez sélectionner l'établissement de santé pour charger les données de cadrage et l'équipe d'experts assignée.</p>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-margin-desktop items-start">
+        <!-- Selection Panel -->
+        <div class="lg:col-span-4 space-y-8">
+            <div class="bg-surface-container-low p-8 rounded-xl pencil-border">
+                <label class="font-label-caps text-label-caps text-on-primary-fixed-variant mb-3 block">Rechercher un établissement</label>
+                <div class="relative group">
+                    <input class="w-full bg-transparent border-b-2 border-outline focus:border-primary focus:ring-0 transition-colors py-3 pl-10 font-body-md" placeholder="Nom, Code FINESS..." type="text">
+                    <span class="material-symbols-outlined absolute left-0 top-3 text-outline group-focus-within:text-primary">search</span>
+                </div>
+                <div class="mt-6 space-y-3">
+                    <p class="font-annotation text-annotation text-on-surface-variant">Recherches récentes :</p>
+                    <button class="w-full text-left p-3 hover:bg-surface-variant rounded-lg transition-colors flex justify-between items-center group">
+                        <span class="font-body-md">CH Saint-Jean de Lumière</span>
+                        <span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                    </button>
+                    <button class="w-full text-left p-3 hover:bg-surface-variant rounded-lg transition-colors flex justify-between items-center group">
+                        <span class="font-body-md">Clinique des Orchidées</span>
+                        <span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 relative overflow-hidden rounded-xl bg-primary-container text-on-primary-container">
+                <div class="absolute top-[-10px] right-[-10px] opacity-10">
+                    <svg fill="currentColor" height="100" viewBox="0 0 100 100" width="100">
+                        <circle cx="50" cy="50" fill="none" r="40" stroke="currentColor" stroke-width="1"></circle>
+                        <path d="M50 10 L50 90 M10 50 L90 50 M20 20 L80 80 M80 20 L20 80" stroke="currentColor" stroke-width="0.5"></path>
+                    </svg>
+                </div>
+                <h4 class="font-label-caps text-label-caps mb-2">Instructions de sécurité</h4>
+                <p class="font-annotation text-annotation">L'accès aux données patient est strictement réservé au cadre de l'accréditation. Toute déconnexion entraînera un verrouillage de la session.</p>
+            </div>
+        </div>
+
+        <!-- Visit Card -->
+        <div class="lg:col-span-8">
+            <div class="bg-surface-container-lowest rounded-xl pencil-border overflow-hidden shadow-sm relative">
+                <!-- Art Deco Accent -->
+                <div class="absolute top-0 right-0 w-24 h-24 pointer-events-none opacity-20 overflow-hidden">
+                    <div class="w-20 h-20 border-t-2 border-r-2 border-[#D4AF37] rotate-45 translate-x-12 -translate-y-12"></div>
+                    <div class="w-16 h-16 border-t-2 border-r-2 border-[#D4AF37] rotate-45 translate-x-10 -translate-y-10"></div>
+                </div>
+                <!-- Card Header -->
+                <div class="p-10 border-b border-outline-variant bg-surface-container-low">
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                        <div>
+                            <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Fiche de Visite Automatisée</span>
+                            <h3 class="font-headline-lg text-headline-lg text-on-background mt-2">Centre Hospitalier Intercommunal du Val de Marne</h3>
+                            <p class="font-body-md text-on-surface-variant flex items-center gap-2 mt-1">
+                                <span class="material-symbols-outlined text-[18px]">location_on</span>
+                                Créteil, France — ID: 940001234
+                            </p>
+                        </div>
+                        <div class="flex flex-col items-end gap-2 shrink-0">
+                            <div class="bg-white px-4 py-2 rounded-lg pencil-border flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">calendar_today</span>
+                                <div class="text-right">
+                                    <p class="font-label-caps text-[10px] leading-none text-outline">PÉRIODE</p>
+                                    <p class="font-body-md font-bold">14 — 18 Oct. 2024</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card Content Grid -->
+                <div class="p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- Stats -->
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-label-caps text-label-caps text-outline mb-4">Capacité &amp; Organisation</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-surface-container-low p-4 rounded-lg flex flex-col justify-center items-center text-center">
+                                    <span class="font-headline-md text-headline-md text-primary">450</span>
+                                    <span class="font-label-caps text-[10px] text-on-surface-variant">LITS &amp; PLACES</span>
+                                </div>
+                                <div class="bg-surface-container-low p-4 rounded-lg flex flex-col justify-center items-center text-center">
+                                    <span class="font-headline-md text-headline-md text-primary">12</span>
+                                    <span class="font-label-caps text-[10px] text-on-surface-variant">SERVICES</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative pt-6">
+                            <h4 class="font-label-caps text-label-caps text-outline mb-4">Activités Principales</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-center gap-3 font-body-md text-on-surface">
+                                    <span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+                                    Médecine, Chirurgie, Obstétrique (MCO)
+                                </li>
+                                <li class="flex items-center gap-3 font-body-md text-on-surface">
+                                    <span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+                                    Soins de Suite et de Réadaptation (SSR)
+                                </li>
+                                <li class="flex items-center gap-3 font-body-md text-on-surface">
+                                    <span class="material-symbols-outlined text-[16px] text-primary">check_circle</span>
+                                    Urgences 24h/24
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Team -->
+                    <div class="space-y-6">
+                        <h4 class="font-label-caps text-label-caps text-outline mb-4">Équipe de Visite (V4)</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 p-3 rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-default">
+                                <div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+                                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfqv_ot9zHmJoZZMpIXwAAn8N2Mhbmes48PzPzyxFg9gJSdOpvqwMBYX3l8uxEsTpzOn3aX315G6RzOW-5GY2gSt-ODZWAlp3VpFBVCEBUf-TYlswx-101m86CJIzXkXnOrpUelFdN7YsoQYUQEMI4yNAouVV0bxtPn-Pc6sO3cRiy_eOm9L3EqORh_mfPAcV9Lb6f5kCfIEMOcwFwL903sCVf4VkUVHEioWvWHeYDrtrG5YQaWgIyByDA7prCzadbv1h2T6laLVwu">
+                                </div>
+                                <div>
+                                    <p class="font-body-md font-bold text-on-surface">Dr. Anne-Sophie Girard</p>
+                                    <p class="font-annotation text-[12px] text-primary">Coordination &amp; Gouvernance</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-3 rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-default">
+                                <div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+                                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbEIbBxE3P2j7A4_CrsyLzWovEw6flWv_2q1saj-_J2m75i0R_4tR1BFF5ycha44shxvv4mCcxwiwGIx0H_bxmqfmvH7HCgL2JRxqkqp_PdLcsHgO4u893FlYIjBDRCknrc_hBv-6lvdUO1BxdsCPuVWkf9yxkVBRMZSen1yovcGAJ543TSGrbHuBaX7-yKsML32Wc9mSPmwK8RcPNnu_YZ5CM9pzn-0IaKN6QN2ynSOIuNAipyUUYLZEaB9MNB_kVK6AN9Je4VEdF">
+                                </div>
+                                <div>
+                                    <p class="font-body-md font-bold text-on-surface">Jean-Luc Moreau</p>
+                                    <p class="font-annotation text-[12px] text-primary">Qualité &amp; Sécurité des Soins</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-3 rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-default">
+                                <div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+                                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVsdiIRJD__C1m8GM8Zu3fEmlmpq52N9pQ3uaQbx3XVS7TsJZ6us5VoTIJKYmK1UY5mo7ZuVZ3OuocH7rZmv6et2tbmyHo4YxcT8TNcFeX1ViwaQbYfqWSEQgwx1d5-m977JZcWoaYJRgNpa1zvep6doJz7V43KnJ4fX-ZQvh42MEkuzvKhMMibIXgxg4XVqSFz6BHCtcXb4bZoDmQ2-lUZdTFvFDYFAEuJKFr3VyjVqigBgOE-fH7rZ54B0qodXVTYXucpSZzP1zq">
+                                </div>
+                                <div>
+                                    <p class="font-body-md font-bold text-on-surface">Mme Claire Vallet</p>
+                                    <p class="font-annotation text-[12px] text-primary">Parcours Patient &amp; Éthique</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer Action -->
+                <div class="px-10 py-8 bg-surface-container-high flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-outline">history_edu</span>
+                        <span class="font-annotation text-annotation italic text-on-surface-variant">Données extraites le 10/10/2024 par l'ANAC</span>
+                    </div>
+                    <button class="bg-primary text-white px-8 py-4 rounded-xl font-label-caps text-label-caps tracking-widest flex items-center gap-3 hover:opacity-90 active:scale-95 transition-all shadow-lg">
+                        CONFIRMER ET COMMENCER
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Footer Marginalia -->
+            <div class="mt-8 flex justify-center">
+                <div class="relative inline-block px-12 py-4">
+                    <div class="absolute inset-0 art-deco-sun opacity-5"></div>
+                    <p class="font-annotation text-annotation text-center max-w-md mx-auto text-outline">
+                        "L'accréditation est un chemin vers l'excellence, guidé par la rigueur de l'observation et la bienveillance de l'échange."
+                    </p>
+                    <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-outline"></div>
+                    <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-outline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter py-2 bg-surface-container-highest border-t border-outline-variant shadow-md rounded-t-xl">
+    <button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+        <span class="material-symbols-outlined">arrow_back</span>
+        <span class="font-label-caps text-[10px]">PRÉCÉDENT</span>
+    </button>
+    <button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full p-2 scale-90">
+        <span class="material-symbols-outlined">view_carousel</span>
+        <span class="font-label-caps text-[10px]">APERÇU</span>
+    </button>
+    <button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+        <span class="material-symbols-outlined">star</span>
+        <span class="font-label-caps text-[10px]">FAVORIS</span>
+    </button>
+    <button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+        <span class="material-symbols-outlined">edit_note</span>
+        <span class="font-label-caps text-[10px]">NOTES</span>
+    </button>
+    <button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+        <span class="material-symbols-outlined">arrow_forward</span>
+        <span class="font-label-caps text-[10px]">SUIVANT</span>
+    </button>
+</nav>
+
+<script class="">
+    const searchInput = document.querySelector('input[type="text"]');
+    
+    searchInput.addEventListener('focus', () => {
+        searchInput.parentElement.classList.add('sketch-underline');
+    });
+
+    searchInput.addEventListener('blur', () => {
+        searchInput.parentElement.classList.remove('sketch-underline');
+    });
+
+    const members = document.querySelectorAll('.cursor-default');
+    members.forEach(member => {
+        member.addEventListener('mouseenter', () => {
+            member.style.transform = 'translateY(-2px)';
+            member.style.boxShadow = '2px 4px 12px rgba(129, 116, 114, 0.1)';
+        });
+        member.addEventListener('mouseleave', () => {
+            member.style</script></body></html>
