@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { DOMAINS, computeDomainScore, getAccreditationLevel, ESTABLISHMENTS } from '../data/referentiel';
+import { DOMAINS, computeScore, computeDomainScore, getAccreditationLevel, ESTABLISHMENTS } from '../data/referentiel';
 
 export function generatePDF(appState) {
   const { establishment, grades, scores } = appState;
@@ -11,7 +11,6 @@ export function generatePDF(appState) {
   }
 
   // Calculate current establishment scores
-  const { computeScore } = require('../data/referentiel');
   const totalScore = computeScore(grades);
   const level = getAccreditationLevel(totalScore);
   const allScores = { ...scores, [establishment.id]: totalScore };
