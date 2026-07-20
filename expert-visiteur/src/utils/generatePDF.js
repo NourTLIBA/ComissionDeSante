@@ -1,10 +1,13 @@
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import { autoTable, applyPlugin } from 'jspdf-autotable';
 import { DOMAINS, computeScore, computeDomainScore, getAccreditationLevel, ESTABLISHMENTS } from '../data/referentiel';
+
+// Register the autotable plugin with jsPDF v4
+applyPlugin(jsPDF);
 
 export function generatePDF(appState) {
   const { establishment, grades, scores } = appState;
-  
+
   if (!establishment) {
     alert("Aucun établissement sélectionné.");
     return;
@@ -23,7 +26,7 @@ export function generatePDF(appState) {
 
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
-  
+
   // Helper for centered text
   const centerText = (text, y, fontSize, fontStyle = 'normal') => {
     doc.setFontSize(fontSize);
@@ -33,29 +36,29 @@ export function generatePDF(appState) {
   };
 
   // --- SECTION 1: INDIVIDUAL GRADE ---
-  
+
   // Header
   centerText("EXPERT VISITEUR", 20, 24, 'bold');
   centerText("Rapport d'Accréditation Santé", 28, 14, 'italic');
-  
+
   doc.setLineWidth(0.5);
   doc.line(20, 35, pageWidth - 20, 35);
-  
+
   // Establishment Info
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.text(`Établissement: ${establishment.name}`, 20, 50);
-  
+
   doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
   doc.text(`Ville/Wilaya: ${establishment.city}, ${establishment.wilaya}`, 20, 60);
   doc.text(`Type: ${establishment.type} | Lits: ${establishment.beds}`, 20, 68);
   doc.text(`Code: ${establishment.code}`, 20, 76);
-  
+
   // Overall Score
   doc.setFillColor(240, 240, 240);
   doc.rect(20, 85, pageWidth - 40, 30, 'F');
-  
+
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
   doc.text(`Score Global: ${totalScore.toFixed(1)} / 100`, 30, 98);
@@ -75,7 +78,8 @@ export function generatePDF(appState) {
     ];
   });
 
-  doc.autoTable({
+  // jspdf-autotable v5: standalone autoTable(doc, options)
+  autoTable(doc, {
     startY: 135,
     head: [['ID', 'Domaine', 'Points', 'Pourcentage']],
     body: domainTableData,
@@ -86,18 +90,18 @@ export function generatePDF(appState) {
 
   // --- SECTION 2: GLOBAL RANKING & COMPARISONS ---
   doc.addPage();
-  
+
   centerText("CLASSEMENT NATIONAL ET COMPARAISONS", 20, 18, 'bold');
   doc.line(20, 25, pageWidth - 20, 25);
 
   // Calculate Global Metrics
   const rankedIds = Object.keys(allScores);
   const totalRanked = rankedIds.length;
-  
+
   let averageScore = 0;
   if (totalRanked > 0) {
-      const sum = rankedIds.reduce((acc, id) => acc + allScores[id], 0);
-      averageScore = sum / totalRanked;
+    const sum = rankedIds.reduce((acc, id) => acc + allScores[id], 0);
+    averageScore = sum / totalRanked;
   }
 
   // Display Metrics
@@ -105,11 +109,12 @@ export function generatePDF(appState) {
   doc.setFont('helvetica', 'normal');
   doc.text(`Nombre total d'établissements évalués: ${totalRanked}`, 20, 40);
   doc.text(`Score moyen national: ${averageScore.toFixed(1)} / 100`, 20, 48);
-  
-  const diffFromAvg = totalScore - averageScore;
-  const diffText = diffFromAvg >= 0 ? `+${diffFromAvg.toFixed(1)} points au-dessus` : `${diffFromAvg.toFixed(1)} points en-dessous`;
-  doc.text(`Écart avec la moyenne (${establishment.name}): ${diffText}`, 20, 56);
 
+  const diffFromAvg = totalScore - averageScore;
+  const diffText = diffFromAvg >= 0
+    ? `+${diffFromAvg.toFixed(1)} points au-dessus`
+    : `${diffFromAvg.toFixed(1)} points en-dessous`;
+  doc.text(`Écart avec la moyenne (${establishment.name}): ${diffText}`, 20, 56);
 
   // Global Ranking Table
   doc.setFontSize(14);
@@ -132,31 +137,39 @@ export function generatePDF(appState) {
     ];
   });
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: 80,
     head: [['Rang', 'Établissement', 'Lieu / Type', 'Score', 'Accréditation']],
     body: rankTableData,
     theme: 'striped',
-    headStyles: { fillColor: [83, 98, 83] }, // Secondary color
+    headStyles: { fillColor: [83, 98, 83] },
     didParseCell: function(data) {
-        // Highlight the current establishment
-        if (data.row.raw[1] === establishment.name) {
-            data.cell.styles.fontStyle = 'bold';
-            data.cell.styles.fillColor = [243, 214, 208]; // primary-container ish
-        }
+      // Highlight the current establishment
+      if (data.row.raw && data.row.raw[1] === establishment.name) {
+        data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.fillColor = [243, 214, 208];
+      }
     }
   });
 
-  // Footer
+  // Footer on every page
   const pageCount = doc.internal.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     doc.setFontSize(10);
     doc.setFont('helvetica', 'italic');
-    doc.text(`Généré le ${new Date().toLocaleDateString('fr-FR')} - Expert Visiteur`, 20, doc.internal.pageSize.getHeight() - 10);
-    doc.text(`Page ${i} / ${pageCount}`, pageWidth - 40, doc.internal.pageSize.getHeight() - 10);
+    doc.text(
+      `Généré le ${new Date().toLocaleDateString('fr-FR')} - Expert Visiteur`,
+      20,
+      doc.internal.pageSize.getHeight() - 10
+    );
+    doc.text(
+      `Page ${i} / ${pageCount}`,
+      pageWidth - 40,
+      doc.internal.pageSize.getHeight() - 10
+    );
   }
 
-  // Download
+  // Trigger download
   doc.save(`Rapport_Accreditation_${establishment.name.replace(/\s+/g, '_')}.pdf`);
 }
