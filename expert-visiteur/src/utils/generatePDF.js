@@ -1,9 +1,6 @@
 import { jsPDF } from 'jspdf';
-import { autoTable, applyPlugin } from 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { DOMAINS, computeScore, computeDomainScore, getAccreditationLevel, ESTABLISHMENTS } from '../data/referentiel';
-
-// Register the autotable plugin with jsPDF v4
-applyPlugin(jsPDF);
 
 export function generatePDF(appState) {
   const { establishment, grades, scores } = appState;
@@ -170,6 +167,15 @@ export function generatePDF(appState) {
     );
   }
 
-  // Trigger download
-  doc.save(`Rapport_Accreditation_${establishment.name.replace(/\s+/g, '_')}.pdf`);
+  // Trigger download — explicit blob approach to avoid browser blocking on hosted environments
+  const filename = `Rapport_Accreditation_${establishment.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
