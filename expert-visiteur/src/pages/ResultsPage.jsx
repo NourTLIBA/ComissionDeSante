@@ -57,8 +57,8 @@ function RadarChart({ domainScores, size = 360 }) {
   );
 }
 
-function RankingList({ scores, currentId }) {
-  const ranked = ESTABLISHMENTS
+function RankingList({ scores, currentId, establishments }) {
+  const ranked = establishments
     .map(e => ({ ...e, score: scores[e.id] ?? null }))
     .filter(e => e.score !== null)
     .sort((a, b) => b.score - a.score);
@@ -113,7 +113,7 @@ function RankingList({ scores, currentId }) {
   );
 }
 
-export default function ResultsPage({ appState, setAppState, handleLogout, navigate, handleReset }) {
+export default function ResultsPage({ appState, setAppState, handleLogout, navigate, handleReset, handleCloseVisit }) {
   const { grades, establishment, scores } = appState;
   const totalScore = computeScore(grades);
   const level = getAccreditationLevel(totalScore);
@@ -194,6 +194,28 @@ export default function ResultsPage({ appState, setAppState, handleLogout, navig
               <Icon name="picture_as_pdf" style={{ fontSize: '18px' }} />
               Exporter le rapport PDF
             </button>
+            {appState.evaluation?.status === 'draft' ? (
+              <button
+                onClick={() => {
+                  if (window.confirm('Clôturer la visite ? Les notes seront verrouillées et le score officiel enregistré.')) handleCloseVisit();
+                }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  padding: '12px 24px', background: 'var(--secondary)', color: 'var(--on-secondary)',
+                  border: 'none', borderRadius: '8px', cursor: 'pointer',
+                  fontFamily: 'var(--font-primary)', fontSize: '12px', fontWeight: 700,
+                  letterSpacing: '0.12em', textTransform: 'uppercase',
+                }}
+              >
+                <Icon name="lock" style={{ fontSize: '18px' }} />
+                Clôturer la visite
+              </button>
+            ) : (
+              <span className="font-label-caps" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--on-surface-variant)' }}>
+                <Icon name="lock" style={{ fontSize: '18px' }} />
+                Visite clôturée
+              </span>
+            )}
             <button
               onClick={handleReset}
               style={{
@@ -306,7 +328,7 @@ export default function ResultsPage({ appState, setAppState, handleLogout, navig
                 <Icon name="leaderboard" style={{ fontSize: '18px' }} />
                 Classement des Établissements
               </h4>
-              <RankingList scores={allScores} currentId={establishment?.id} />
+              <RankingList scores={allScores} currentId={establishment?.id} establishments={appState.establishments?.length ? appState.establishments : ESTABLISHMENTS} />
               {Object.keys(allScores).length === 0 && (
                 <div className="font-annotation" style={{ color: 'var(--on-surface-variant)', fontStyle: 'italic' }}>
                   Aucun autre établissement évalué encore.

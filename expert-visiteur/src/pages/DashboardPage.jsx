@@ -7,6 +7,99 @@ const Icon = ({ name, style, className }) => (
   <span className={`material-symbols-outlined ${className || ''}`} style={style}>{name}</span>
 );
 
+/* ── Info tooltip for domains ──────────────────────────────── */
+function DomainInfoTooltip({ domain }) {
+  const [visible, setVisible] = useState(false);
+  const obligatoryCount = domain.criteria.filter(c => c.type === 'Obligatoire').length;
+
+  return (
+    <span
+      style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', verticalAlign: 'middle' }}
+      onMouseEnter={() => setVisible(true)}
+      onMouseLeave={() => setVisible(false)}
+      onFocus={() => setVisible(true)}
+      onBlur={() => setVisible(false)}
+      tabIndex={0}
+      onClick={e => e.stopPropagation()}
+      aria-label={`Informations sur le domaine ${domain.id}`}
+    >
+      <Icon
+        name="info"
+        style={{
+          fontSize: '16px',
+          color: 'var(--outline)',
+          cursor: 'help',
+          fontVariationSettings: "'FILL' 1",
+        }}
+      />
+      {visible && (
+        <div
+          role="tooltip"
+          style={{
+            position: 'absolute',
+            bottom: 'calc(100% + 8px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'var(--inverse-surface)',
+            color: 'var(--surface)',
+            fontSize: '11px',
+            lineHeight: 1.5,
+            padding: '14px',
+            borderRadius: '12px',
+            width: '320px',
+            maxHeight: '340px',
+            overflowY: 'auto',
+            textAlign: 'left',
+            fontFamily: 'var(--font-body)',
+            pointerEvents: 'none',
+            zIndex: 250,
+            boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
+            whiteSpace: 'normal',
+            border: '1px solid var(--outline-variant)',
+          }}
+        >
+          <div style={{ fontWeight: 700, fontFamily: 'var(--font-primary)', color: 'var(--warm-gold)', fontSize: '12px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Icon name="policy" style={{ fontSize: '14px', color: 'var(--warm-gold)' }} />
+            {domain.id} — {domain.label} ({domain.weight} pts)
+          </div>
+          <div style={{ fontSize: '10px', color: 'var(--surface-variant)', marginBottom: '10px' }}>
+            {domain.criteria.length} critères ({obligatoryCount} obligatoires)
+          </div>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {domain.criteria.map(c => (
+              <div key={c.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '6px 8px', borderRadius: '6px' }}>
+                <div style={{ fontWeight: 700, color: 'var(--sage)', fontSize: '11px' }}>
+                  Critère {c.num}: {c.label} ({c.type})
+                </div>
+                {c.directive && (
+                  <div style={{ fontSize: '10px', color: 'var(--powder-blue)', fontStyle: 'italic', marginTop: '1px' }}>
+                    {c.directive}
+                  </div>
+                )}
+                {c.evidence && (
+                  <div style={{ fontSize: '10px', color: 'var(--surface)', marginTop: '3px', display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
+                    <Icon name="folder_open" style={{ fontSize: '12px', color: 'var(--sage)', flexShrink: 0, marginTop: '1px' }} />
+                    <span style={{ opacity: 0.9 }}>{c.evidence.slice(0, 110)}...</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <span style={{
+            position: 'absolute',
+            top: '100%', left: '50%',
+            transform: 'translateX(-50%)',
+            width: 0, height: 0,
+            borderLeft: '6px solid transparent',
+            borderRight: '6px solid transparent',
+            borderTop: '6px solid var(--inverse-surface)',
+          }} />
+        </div>
+      )}
+    </span>
+  );
+}
+
 function CircleProgress({ percent, size = 48, strokeWidth = 4, color = 'var(--secondary)' }) {
   const r = (size - strokeWidth * 2) / 2;
   const circ = 2 * Math.PI * r;
@@ -21,9 +114,9 @@ function CircleProgress({ percent, size = 48, strokeWidth = 4, color = 'var(--se
   );
 }
 
-export default function DashboardPage({ appState, setAppState, handleLogout, navigate, onDomainSelect, onFinish, handleReset }) {
+export default function DashboardPage({ appState, setAppState, handleLogout, navigate, onDomainSelect, onFinish, handleReset, handleComment }) {
   const [isCommentModalOpen, setCommentModalOpen] = useState(false);
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState(appState.comment || "");
 
   const { grades, establishment } = appState;
   const totalScore = computeScore(grades);
@@ -40,7 +133,7 @@ export default function DashboardPage({ appState, setAppState, handleLogout, nav
       <AppHeader appState={appState} handleLogout={handleLogout} navigate={navigate} activePage="dashboard" />
       <DomainNav appState={appState} onDomainSelect={onDomainSelect} activeDomainId={null} />
 
-      <main className="page-container" style={{ paddingTop: '140px', paddingBottom: '80px', position: 'relative' }}>
+      <main className="page-container" style={{ paddingTop: '130px', paddingBottom: '80px', position: 'relative' }}>
         {/* Marginalia annotation */}
         <div style={{ position: 'absolute', right: '8px', top: '160px', opacity: 0.2, pointerEvents: 'none', display: 'none' }} className="xl-show">
           <div style={{ fontFamily: 'var(--font-annotation)', fontSize: '12px', transform: 'rotate(6deg)', color: 'var(--primary)', maxWidth: '120px' }}>
@@ -178,8 +271,9 @@ export default function DashboardPage({ appState, setAppState, handleLogout, nav
                   <span className="font-label-caps" style={{ color: 'var(--outline)', display: 'block', marginBottom: '4px', fontSize: '10px' }}>
                     {domain.id} — {domain.id === 'D1' ? 'GOUVERNANCE' : domain.id === 'D2' ? 'DROITS PATIENTS' : domain.id === 'D3' ? 'QUALITÉ SOINS' : domain.id === 'D4' ? 'RH & FORMATION' : domain.id === 'D5' ? 'INFRASTRUCTURES' : domain.id === 'D6' ? 'SYST. INFO.' : 'PERFORMANCE'}
                   </span>
-                  <h3 style={{ fontFamily: 'var(--font-primary)', fontSize: '18px', fontWeight: 500, color: 'var(--primary)', lineHeight: 1.3 }}>
+                  <h3 style={{ fontFamily: 'var(--font-primary)', fontSize: '18px', fontWeight: 500, color: 'var(--primary)', lineHeight: 1.3, display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                     {domain.label}
+                    <DomainInfoTooltip domain={domain} />
                   </h3>
                 </div>
 
@@ -286,10 +380,8 @@ export default function DashboardPage({ appState, setAppState, handleLogout, nav
                 Annuler
               </button>
               <button
-                onClick={() => {
-                  alert("Commentaire sauvegardé (simulation)");
-                  setCommentModalOpen(false);
-                  setCommentText("");
+                onClick={async () => {
+                  if (await handleComment(commentText)) setCommentModalOpen(false);
                 }}
                 style={{
                   padding: '12px 24px', background: 'var(--primary)',

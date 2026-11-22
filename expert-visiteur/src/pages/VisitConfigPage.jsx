@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ESTABLISHMENTS } from '../data/referentiel';
 import AppHeader from '../components/AppHeader';
 
+
 const Icon = ({ name, style, className }) => (
   <span className={`material-symbols-outlined ${className || ''}`} style={style}>{name}</span>
 );
@@ -10,10 +11,13 @@ export default function VisitConfigPage({ appState, onSelectEstablishment, handl
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
 
-  const filtered = ESTABLISHMENTS.filter(e =>
-    e.name.toLowerCase().includes(search.toLowerCase()) ||
-    e.city.toLowerCase().includes(search.toLowerCase()) ||
-    e.code.toLowerCase().includes(search.toLowerCase())
+  // list from the server (cached in appState); the built-in list is the fallback
+  const establishments = appState.establishments?.length ? appState.establishments : ESTABLISHMENTS;
+  const q = search.toLowerCase();
+  const filtered = establishments.filter(e =>
+    (e.name || '').toLowerCase().includes(q) ||
+    (e.city || '').toLowerCase().includes(q) ||
+    (e.code || '').toLowerCase().includes(q)
   );
 
   const handleConfirm = () => {
@@ -24,7 +28,30 @@ export default function VisitConfigPage({ appState, onSelectEstablishment, handl
     <div style={{ minHeight: '100vh', background: 'var(--surface-container-low)' }}>
       <AppHeader appState={appState} handleLogout={handleLogout} navigate={navigate} activePage="config" />
 
-      <main className="page-container" style={{ paddingTop: '120px', paddingBottom: '80px' }}>
+      <main className="page-container" style={{ paddingTop: '88px', paddingBottom: '80px' }}>
+
+        {/* ── Disclaimer banner ─────────────────────────────────── */}
+        <div role="alert" style={{
+          display: 'flex', alignItems: 'flex-start', gap: '12px',
+          background: '#fffbe6',
+          border: '1px solid #ffe58f',
+          borderLeft: '4px solid #faad14',
+          borderRadius: '8px',
+          padding: '14px 20px',
+          marginBottom: '32px',
+          boxShadow: '0 2px 8px rgba(250,173,20,0.12)',
+        }}>
+          <span className="material-symbols-outlined" style={{ color: '#d48806', fontSize: '22px', flexShrink: 0, marginTop: '1px', fontVariationSettings: "'FILL' 1" }}>warning</span>
+          <div>
+            <p style={{ fontFamily: 'var(--font-primary)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', color: '#7c5800', marginBottom: '4px' }}>
+              Instructions
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#7c5800', lineHeight: 1.5 }}>
+              Le nombre d'établissements affiché est à titre indicatif — la liste officielle reste sujette à mise à jour.
+            </p>
+          </div>
+        </div>
+
         {/* Header section */}
         <section style={{ textAlign: 'center', marginBottom: '48px' }}>
           <div style={{
@@ -34,7 +61,7 @@ export default function VisitConfigPage({ appState, onSelectEstablishment, handl
           }}>
             <Icon name="verified" style={{ color: '#D4AF37', fontVariationSettings: "'FILL' 1" }} />
             <span className="font-label-caps" style={{ color: 'var(--primary)' }}>
-              Expert visiteur certifié — Autorité nationale d'accréditation
+              Instance nationale d'évaluation
             </span>
           </div>
           <h2 className="font-headline-lg" style={{ color: 'var(--on-surface)', marginBottom: '16px', letterSpacing: '0.05em' }}>
@@ -189,7 +216,7 @@ export default function VisitConfigPage({ appState, onSelectEstablishment, handl
                   Sélectionnez un établissement dans la liste pour charger sa fiche de visite et démarrer la procédure d'évaluation.
                 </p>
                 <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {['10 établissements disponibles', '44 critères, 7 domaines', '100 points au total'].map(t => (
+                  {[`${establishments.length} établissements disponibles`, '44 critères, 7 domaines', '100 points au total'].map(t => (
                     <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Icon name="check_circle" style={{ fontSize: '16px', color: 'var(--primary)', fontVariationSettings: "'FILL' 1" }} />
                       <span className="font-annotation" style={{ color: 'var(--on-primary-container)' }}>{t}</span>

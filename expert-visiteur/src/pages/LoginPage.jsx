@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import coatOfArms from '../assets/coat_of_arms.svg';
+import { api, setToken } from '../api';
 
 const Icon = ({ name, style, className }) => (
   <span className={`material-symbols-outlined ${className || ''}`} style={style}>{name}</span>
@@ -10,16 +12,27 @@ export default function LoginPage({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
+  const [waking, setWaking] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!id.trim()) { setError('Veuillez saisir votre identifiant.'); return; }
+    if (!pass) { setError('Veuillez saisir votre mot de passe.'); return; }
     setError('');
     setLoading(true);
-    setTimeout(() => {
+    // The free server sleeps when idle; the first call can take up to a minute.
+    const wakeTimer = setTimeout(() => setWaking(true), 4000);
+    try {
+      const { token, user } = await api('/auth/login', { method: 'POST', body: { login: id.trim(), password: pass } });
+      setToken(token);
+      onLogin(user);
+    } catch (err) {
+      setError(err.message);
       setLoading(false);
-      onLogin({ id: id.trim(), name: `Expert ${id.trim()}` });
-    }, 900);
+    } finally {
+      clearTimeout(wakeTimer);
+      setWaking(false);
+    }
   };
 
   return (
@@ -32,10 +45,50 @@ export default function LoginPage({ onLogin }) {
       padding: '24px',
       background: 'var(--surface-container-low)',
     }}>
-      {/* Art Deco Fan Emblem */}
-      <div style={{ marginBottom: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div className="fan-pattern" />
-        <div style={{ width: '128px', height: '1px', background: 'var(--outline-variant)', marginTop: '16px' }} />
+      {/* ── Government identity hero ── */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        marginBottom: '48px', textAlign: 'center', gap: '20px',
+      }}>
+        {/* Coat of arms */}
+        <div style={{
+          width: '96px', height: '96px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          borderRadius: '50%',
+          background: 'var(--surface-container-highest)',
+          border: '1px solid var(--outline-variant)',
+          boxShadow: '0 4px 20px rgba(111,89,85,0.12)',
+        }}>
+          <img
+            src={coatOfArms}
+            alt="Armoiries de la République Algérienne"
+            width="64"
+            height="64"
+            style={{ objectFit: 'contain' }}
+          />
+        </div>
+        <div style={{ lineHeight: 1.6 }}>
+          <div style={{
+            fontFamily: 'var(--font-primary)',
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'var(--on-surface-variant)',
+          }}>
+            République Algérienne Démocratique et Populaire
+          </div>
+          <div style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: '13px',
+            letterSpacing: '0.06em',
+            color: 'var(--outline)',
+            marginTop: '4px',
+          }}>
+            Ministère de la Santé · Instance Nationale d’Évaluation
+          </div>
+        </div>
+        <div style={{ width: '128px', height: '1px', background: 'var(--outline-variant)' }} />
       </div>
 
       {/* Decorative corner sunbursts (desktop) */}
@@ -134,6 +187,12 @@ export default function LoginPage({ onLogin }) {
                 <span className="font-annotation" style={{ color: 'var(--on-surface-variant)' }}>Se souvenir de moi</span>
               </label>
             </div>
+
+            {waking && (
+              <div className="font-annotation" style={{ color: 'var(--on-surface-variant)', fontSize: '13px', textAlign: 'center' }}>
+                Le serveur se réveille, cela peut prendre jusqu'à une minute…
+              </div>
+            )}
 
             {error && (
               <div style={{ color: 'var(--error)', fontFamily: 'var(--font-annotation)', fontSize: '14px', padding: '8px 12px', background: 'var(--error-container)', borderRadius: '6px' }}>

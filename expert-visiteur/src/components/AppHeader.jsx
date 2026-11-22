@@ -1,4 +1,4 @@
-import { DOMAINS } from '../data/referentiel';
+import coatOfArms from '../assets/coat_of_arms.svg';
 
 const Icon = ({ name, style, className }) => (
   <span className={`material-symbols-outlined ${className || ''}`} style={style}>{name}</span>
@@ -11,29 +11,52 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
     <header style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
       background: 'var(--background)',
-      borderBottom: '1px solid var(--outline-variant)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
     }}>
+      {/* ── App nav bar ─────────────────────────────────────────── */}
       <div style={{
         maxWidth: '1280px', margin: '0 auto', padding: '0 24px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '64px',
+        borderBottom: '1px solid var(--outline-variant)',
       }}>
-        {/* Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        {/* Brand + gov identity */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Coat of arms */}
           <button
             onClick={() => navigate(establishment ? 'dashboard' : 'config')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '10px' }}
           >
-            <h1 className="font-headline-lg" style={{ color: 'var(--primary)', fontSize: '20px', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>
-              Expert Visiteur
-            </h1>
+            <img
+              src={coatOfArms}
+              alt="Armoiries de la République Algérienne"
+              width="30"
+              height="30"
+              style={{ objectFit: 'contain', flexShrink: 0, opacity: 0.85 }}
+            />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.25 }}>
+              <span className="font-headline-lg" style={{ color: 'var(--primary)', fontSize: '16px', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>
+                Expert Visiteur
+              </span>
+              <span style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '9px',
+                letterSpacing: '0.06em',
+                color: 'var(--outline)',
+                whiteSpace: 'nowrap',
+              }}>
+                Ministère de la Santé · Instance Nationale d'Évaluation
+              </span>
+            </div>
           </button>
-          <div style={{ width: '1px', height: '24px', background: 'var(--outline-variant)' }} />
+
+          <div style={{ width: '1px', height: '28px', background: 'var(--outline-variant)', marginLeft: '4px' }} />
+
           <nav style={{ display: 'flex', gap: '24px' }}>
             {[
-              { id: 'config', label: 'Visite', page: 'config' },
-              { id: 'dashboard', label: 'Domaines', page: 'dashboard' },
-              { id: 'evaluation', label: 'Critères', page: 'evaluation' },
-              { id: 'results', label: 'Résultats', page: 'results' },
+              { id: 'config',     label: 'Visite',    page: 'config' },
+              { id: 'dashboard',  label: 'Domaines',  page: 'dashboard' },
+              { id: 'evaluation', label: 'Critères',  page: 'evaluation' },
+              { id: 'results',    label: 'Résultats', page: 'results' },
             ].map(item => (
               <button
                 key={item.id}
@@ -70,6 +93,15 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
               {establishment.name}
             </div>
           )}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => navigate('admin')}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: activePage === 'admin' ? 'var(--primary)' : 'var(--on-surface-variant)' }}
+              title="Administration"
+            >
+              <Icon name="admin_panel_settings" style={{ fontSize: '24px' }} />
+            </button>
+          )}
           <button
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--on-surface-variant)', display: 'flex', alignItems: 'center', gap: '4px' }}
             title={user ? `Connecté : ${user.name}` : ''}
@@ -86,7 +118,7 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
         </div>
       </div>
 
-      {/* Inline styles for responsiveness — nav links visible on md+ */}
+      {/* Inline responsive styles */}
       <style>{`
         .nav-link { display: none !important; }
         @media (min-width: 768px) { .nav-link { display: block !important; } }
