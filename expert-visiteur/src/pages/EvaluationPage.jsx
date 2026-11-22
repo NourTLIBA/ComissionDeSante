@@ -439,7 +439,7 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
       <main style={{ padding: '130px 24px 160px', maxWidth: '1280px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
 
         {/* Progress summary */}
-        <div style={{ width: '100%', maxWidth: '672px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', padding: '0 8px' }}>
+        <div className="eval-progress" style={{ width: '100%', maxWidth: '672px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', padding: '0 8px' }}>
           <div>
             <span className="font-label-caps" style={{ color: 'var(--primary)', display: 'block', marginBottom: '4px' }}>
               Domaine {domain.id}
@@ -462,9 +462,10 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
         </div>
 
         {/* Nav arrows (desktop) */}
-        <div style={{ position: 'relative', width: '100%', maxWidth: '672px' }}>
+        <div className="eval-stage" style={{ position: 'relative', width: '100%', maxWidth: '672px' }}>
           {/* Prev arrow */}
           <button
+            className="eval-arrow eval-arrow-prev"
             onClick={goPrev}
             disabled={currentDomain === 0 && currentCriterion === 0}
             style={{
@@ -483,7 +484,7 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
           </button>
 
           {/* Main flashcard */}
-          <div className="sketch-border" style={{
+          <div className="sketch-border eval-card" style={{
             background: 'var(--surface-container-low)',
             borderRadius: '12px',
             padding: '48px',
@@ -546,6 +547,7 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
 
           {/* Next arrow */}
           <button
+            className="eval-arrow eval-arrow-next"
             onClick={goNext}
             style={{
               position: 'absolute', right: '-80px', top: '50%', transform: 'translateY(-50%)',

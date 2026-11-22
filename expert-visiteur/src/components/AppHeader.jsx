@@ -13,7 +13,7 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
       background: 'var(--background)',
     }}>
       {/* ── App nav bar ─────────────────────────────────────────── */}
-      <div style={{
+      <div className="header-bar" style={{
         maxWidth: '1280px', margin: '0 auto', padding: '0 24px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '64px',
         borderBottom: '1px solid var(--outline-variant)',
@@ -33,10 +33,10 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
               style={{ objectFit: 'contain', flexShrink: 0, opacity: 0.85 }}
             />
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.25 }}>
-              <span className="font-headline-lg" style={{ color: 'var(--primary)', fontSize: '16px', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>
+              <span className="font-headline-lg brand-title" style={{ color: 'var(--primary)', fontSize: '16px', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>
                 Expert Visiteur
               </span>
-              <span style={{
+              <span className="brand-sub" style={{
                 fontFamily: 'var(--font-body)',
                 fontSize: '9px',
                 letterSpacing: '0.06em',
@@ -78,7 +78,7 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
         </div>
 
         {/* Right actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
           {establishment && (
             <div style={{
               background: 'var(--primary-container)', color: 'var(--on-primary-container)',
@@ -94,6 +94,7 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
           )}
           {user?.role === 'admin' && (
             <button
+              className="header-icon"
               onClick={() => navigate('admin')}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: activePage === 'admin' ? 'var(--primary)' : 'var(--on-surface-variant)' }}
               title="Administration"
@@ -102,12 +103,14 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
             </button>
           )}
           <button
+            className="header-icon"
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--on-surface-variant)', display: 'flex', alignItems: 'center', gap: '4px' }}
             title={user ? `Connecté : ${user.name}` : ''}
           >
             <Icon name="account_circle" style={{ fontSize: '24px' }} />
           </button>
           <button
+            className="header-icon"
             onClick={handleLogout}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--on-surface-variant)' }}
             title="Se déconnecter"
@@ -119,6 +122,16 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
 
       {/* Inline responsive styles */}
       <style>{`
+        @media (max-width: 640px) {
+          .header-bar { padding: 0 16px !important; }
+          .brand-sub { display: none; }
+          .header-icon { min-width: 40px; min-height: 40px; justify-content: center; align-items: center; display: inline-flex !important; }
+          .header-bar > div:last-child { gap: 0 !important; }
+        }
+        @media (max-width: 380px) {
+          .brand-title { font-size: 14px !important; letter-spacing: 0.06em !important; }
+          .header-icon { min-width: 36px !important; }
+        }
         .nav-link { display: none !important; }
         @media (min-width: 768px) { .nav-link { display: block !important; } }
         #est-badge { display: none !important; }
