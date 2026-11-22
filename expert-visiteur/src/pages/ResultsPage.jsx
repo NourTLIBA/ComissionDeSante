@@ -64,7 +64,7 @@ function RankingList({ scores, currentId, establishments }) {
     .sort((a, b) => b.score - a.score);
 
   if (ranked.length === 0) return (
-    <div className="font-annotation" style={{ color: 'var(--on-surface-variant)', padding: '16px', fontStyle: 'italic', textAlign: 'center' }}>
+    <div className="font-annotation" style={{ color: 'var(--on-surface-variant)', padding: '16px', textAlign: 'center' }}>
       Aucune évaluation complétée pour les autres établissements.
     </div>
   );
@@ -140,17 +140,10 @@ export default function ResultsPage({ appState, setAppState, handleLogout, navig
         {/* Score hero */}
         <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '64px', textAlign: 'center' }}>
           <div style={{ position: 'relative', width: '256px', height: '256px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Sunburst background */}
-            <div className="sunburst-animate" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}>
-              <svg width="100%" height="100%" viewBox="0 0 100 100">
-                <path d="M50 0 L52 48 L100 50 L52 52 L50 100 L48 52 L0 50 L48 48 Z" fill="var(--primary)"/>
-                <path d="M15 15 L48 48 M85 15 L52 50 M85 85 L50 52 M15 85 L48 50" stroke="var(--primary)" strokeWidth="0.3"/>
-              </svg>
-            </div>
             {/* Score circle */}
             <div style={{
               position: 'relative', zIndex: 10, width: '192px', height: '192px', borderRadius: '50%',
-              border: '2px solid var(--primary)', background: 'white', boxShadow: 'inset 0 2px 16px rgba(111,89,85,0.06)',
+              border: '2px solid var(--primary)', background: 'white',
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             }}>
               <span className="font-headline-lg">{totalScore.toFixed(1)} / 100</span>
@@ -160,7 +153,7 @@ export default function ResultsPage({ appState, setAppState, handleLogout, navig
                 background: 'var(--secondary)', color: 'white',
                 padding: '4px 16px', borderRadius: '999px',
                 fontFamily: 'var(--font-primary)', fontSize: '10px', fontWeight: 700,
-                letterSpacing: '0.1em', textTransform: 'uppercase', boxShadow: '0 2px 8px rgba(83,98,83,0.3)',
+                letterSpacing: '0.1em', textTransform: 'uppercase',
               }}>
                 Score Global
               </div>
@@ -279,10 +272,7 @@ export default function ResultsPage({ appState, setAppState, handleLogout, navig
           {/* Right column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* Accreditation status card */}
-            <div className="sketch-border" style={{ background: 'var(--surface)', padding: '24px', borderRadius: '8px', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 0, right: 0, padding: '16px', opacity: 0.08 }}>
-                <Icon name="verified" style={{ fontSize: '72px' }} />
-              </div>
+            <div className="sketch-border" style={{ background: 'var(--surface)', padding: '24px', borderRadius: '8px', position: 'relative' }}>
               <h4 className="font-label-caps" style={{ color: 'var(--primary)', marginBottom: '16px' }}>Statut d'Accréditation</h4>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
                 <span style={{ fontSize: '28px', fontFamily: 'var(--font-primary)', fontWeight: 500, color: level.textColor }}>{level.label}</span>
@@ -330,7 +320,7 @@ export default function ResultsPage({ appState, setAppState, handleLogout, navig
               </h4>
               <RankingList scores={allScores} currentId={establishment?.id} establishments={appState.establishments?.length ? appState.establishments : ESTABLISHMENTS} />
               {Object.keys(allScores).length === 0 && (
-                <div className="font-annotation" style={{ color: 'var(--on-surface-variant)', fontStyle: 'italic' }}>
+                <div className="font-annotation" style={{ color: 'var(--on-surface-variant)' }}>
                   Aucun autre établissement évalué encore.
                 </div>
               )}

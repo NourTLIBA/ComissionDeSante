@@ -53,13 +53,11 @@ function DomainInfoTooltip({ domain }) {
             fontFamily: 'var(--font-body)',
             pointerEvents: 'none',
             zIndex: 250,
-            boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
             whiteSpace: 'normal',
             border: '1px solid var(--outline-variant)',
           }}
         >
-          <div style={{ fontWeight: 700, fontFamily: 'var(--font-primary)', color: 'var(--warm-gold)', fontSize: '12px', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Icon name="policy" style={{ fontSize: '14px', color: 'var(--warm-gold)' }} />
+          <div style={{ fontWeight: 700, fontFamily: 'var(--font-primary)', color: 'var(--warm-gold)', fontSize: '12px', marginBottom: '2px' }}>
             {domain.id} — {domain.label} ({domain.weight} pts)
           </div>
           <div style={{ fontSize: '10px', color: 'var(--surface-variant)', marginBottom: '10px' }}>
@@ -67,19 +65,18 @@ function DomainInfoTooltip({ domain }) {
           </div>
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {domain.criteria.map(c => (
-              <div key={c.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '6px 8px', borderRadius: '6px' }}>
+              <div key={c.id} style={{ borderLeft: '2px solid rgba(255,255,255,0.25)', padding: '2px 8px' }}>
                 <div style={{ fontWeight: 700, color: 'var(--sage)', fontSize: '11px' }}>
                   Critère {c.num}: {c.label} ({c.type})
                 </div>
                 {c.directive && (
-                  <div style={{ fontSize: '10px', color: 'var(--powder-blue)', fontStyle: 'italic', marginTop: '1px' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--powder-blue)', marginTop: '1px' }}>
                     {c.directive}
                   </div>
                 )}
                 {c.evidence && (
-                  <div style={{ fontSize: '10px', color: 'var(--surface)', marginTop: '3px', display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
-                    <Icon name="folder_open" style={{ fontSize: '12px', color: 'var(--sage)', flexShrink: 0, marginTop: '1px' }} />
-                    <span style={{ opacity: 0.9 }}>{c.evidence.slice(0, 110)}...</span>
+                  <div style={{ fontSize: '10px', color: 'var(--surface)', marginTop: '3px', opacity: 0.9 }}>
+                    Preuves : {c.evidence.slice(0, 110)}…
                   </div>
                 )}
               </div>
@@ -134,22 +131,9 @@ export default function DashboardPage({ appState, setAppState, handleLogout, nav
       <DomainNav appState={appState} onDomainSelect={onDomainSelect} activeDomainId={null} />
 
       <main className="page-container" style={{ paddingTop: '130px', paddingBottom: '80px', position: 'relative' }}>
-        {/* Marginalia annotation */}
-        <div style={{ position: 'absolute', right: '8px', top: '160px', opacity: 0.2, pointerEvents: 'none', display: 'none' }} className="xl-show">
-          <div style={{ fontFamily: 'var(--font-annotation)', fontSize: '12px', transform: 'rotate(6deg)', color: 'var(--primary)', maxWidth: '120px' }}>
-            Points critiques à surveiller !
-          </div>
-        </div>
-
-        {/* Central sunburst dial */}
+        {/* Score dial */}
         <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '64px', textAlign: 'center' }}>
           <div style={{ position: 'relative', width: '256px', height: '256px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Animated sunburst background */}
-            <svg className="sunburst-animate" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.12, color: 'var(--primary)' }} viewBox="0 0 100 100">
-              <path d="M50 0 L52 48 L100 50 L52 52 L50 100 L48 52 L0 50 L48 48 Z" fill="currentColor"/>
-              <path d="M15 15 L48 48 M85 15 L52 50 M85 85 L50 52 M15 85 L48 50" stroke="currentColor" strokeWidth="0.3" opacity="0.5"/>
-            </svg>
-
             {/* Big circular progress */}
             <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', transform: 'rotate(-90deg)' }} viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="40" fill="none" stroke="var(--surface-container-highest)" strokeWidth="8"/>
@@ -174,7 +158,6 @@ export default function DashboardPage({ appState, setAppState, handleLogout, nav
               background: 'var(--surface-container-low)', padding: '4px 8px', borderRadius: '4px',
               border: '1px solid var(--outline-variant)',
             }}>
-              <Icon name="edit" style={{ fontSize: '14px' }} />
               {gradedCount}/{totalCriteria} critères notés
             </div>
           </div>
@@ -230,7 +213,7 @@ export default function DashboardPage({ appState, setAppState, handleLogout, nav
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
           {DOMAINS.map((domain, idx) => {
             const ds = computeDomainScore(domain.id, grades);
-            const domainGraded = domain.criteria.filter(c => grades[c.id]).length;
+            const domainGraded = domain.criteria.filter(c => grades[c.id] != null).length;
             return (
               <button
                 key={domain.id}
@@ -281,7 +264,7 @@ export default function DashboardPage({ appState, setAppState, handleLogout, nav
                   <span className="font-body-md" style={{ fontSize: '14px', color: 'var(--on-surface-variant)' }}>
                     {ds.earned.toFixed(1)} / {ds.max} pts
                   </span>
-                  <span style={{ fontFamily: 'var(--font-annotation)', fontSize: '12px', color: 'var(--on-surface-variant)', fontStyle: 'italic' }}>
+                  <span style={{ fontFamily: 'var(--font-annotation)', fontSize: '12px', color: 'var(--on-surface-variant)' }}>
                     {domainGraded}/{domain.criteria.length} notés
                   </span>
                 </div>
@@ -306,7 +289,6 @@ export default function DashboardPage({ appState, setAppState, handleLogout, nav
           background: 'var(--primary)', color: 'var(--on-primary)',
           border: 'none', borderRadius: '50%', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 4px 16px rgba(111,89,85,0.35)',
           transition: 'transform 0.2s, box-shadow 0.2s',
           zIndex: 40,
         }}

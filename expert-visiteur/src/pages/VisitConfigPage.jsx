@@ -30,40 +30,19 @@ export default function VisitConfigPage({ appState, onSelectEstablishment, handl
 
       <main className="page-container" style={{ paddingTop: '88px', paddingBottom: '80px' }}>
 
-        {/* ── Disclaimer banner ─────────────────────────────────── */}
-        <div role="alert" style={{
-          display: 'flex', alignItems: 'flex-start', gap: '12px',
-          background: '#fffbe6',
-          border: '1px solid #ffe58f',
-          borderLeft: '4px solid #faad14',
-          borderRadius: '8px',
-          padding: '14px 20px',
+        {/* Note */}
+        <div style={{
+          borderLeft: '3px solid var(--outline)',
+          padding: '4px 16px',
           marginBottom: '32px',
-          boxShadow: '0 2px 8px rgba(250,173,20,0.12)',
         }}>
-          <span className="material-symbols-outlined" style={{ color: '#d48806', fontSize: '22px', flexShrink: 0, marginTop: '1px', fontVariationSettings: "'FILL' 1" }}>warning</span>
-          <div>
-            <p style={{ fontFamily: 'var(--font-primary)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', color: '#7c5800', marginBottom: '4px' }}>
-              Instructions
-            </p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#7c5800', lineHeight: 1.5 }}>
-              Le nombre d'établissements affiché est à titre indicatif — la liste officielle reste sujette à mise à jour.
-            </p>
-          </div>
+          <p className="font-body-md" style={{ color: 'var(--on-surface-variant)', fontSize: '14px' }}>
+            Le nombre d'établissements affiché est à titre indicatif. La liste officielle reste sujette à mise à jour.
+          </p>
         </div>
 
         {/* Header section */}
         <section style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '12px',
-            background: 'var(--surface-container-low)', padding: '8px 24px',
-            borderRadius: '999px', border: '1px solid var(--outline-variant)', marginBottom: '24px',
-          }}>
-            <Icon name="verified" style={{ color: '#D4AF37', fontVariationSettings: "'FILL' 1" }} />
-            <span className="font-label-caps" style={{ color: 'var(--primary)' }}>
-              Instance nationale d'évaluation
-            </span>
-          </div>
           <h2 className="font-headline-lg" style={{ color: 'var(--on-surface)', marginBottom: '16px', letterSpacing: '0.05em' }}>
             Initialisation de la Visite
           </h2>
@@ -145,15 +124,8 @@ export default function VisitConfigPage({ appState, onSelectEstablishment, handl
                 background: 'var(--surface-container-lowest)',
                 borderRadius: '12px',
                 overflow: 'hidden',
-                boxShadow: '0 4px 24px rgba(111,89,85,0.08)',
                 position: 'relative',
               }}>
-                {/* Art deco corner accent */}
-                <div style={{ position: 'absolute', top: 0, right: 0, width: '96px', height: '96px', pointerEvents: 'none', overflow: 'hidden', opacity: 0.2 }}>
-                  <div style={{ width: '80px', height: '80px', border: '2px solid #D4AF37', transform: 'rotate(45deg) translate(40px, -40px)' }} />
-                  <div style={{ width: '64px', height: '64px', border: '2px solid #D4AF37', transform: 'rotate(45deg) translate(36px, -52px)' }} />
-                </div>
-
                 {/* Card header */}
                 <div style={{ padding: '32px 32px 24px', borderBottom: '1px solid var(--outline-variant)', background: 'var(--surface-container-low)' }}>
                   <div>
@@ -198,8 +170,7 @@ export default function VisitConfigPage({ appState, onSelectEstablishment, handl
                     onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
                     onMouseLeave={e => e.currentTarget.style.opacity = '1'}
                   >
-                    Confirmer et Commencer
-                    <Icon name="arrow_forward" style={{ fontSize: '20px' }} />
+                    Confirmer et commencer
                   </button>
                 </div>
               </div>
@@ -208,32 +179,18 @@ export default function VisitConfigPage({ appState, onSelectEstablishment, handl
                 background: 'var(--primary-container)', borderRadius: '12px', padding: '32px',
                 position: 'relative', overflow: 'hidden',
               }}>
-                <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.1 }}>
-                  <Icon name="local_hospital" style={{ fontSize: '100px', color: 'var(--on-primary-container)' }} />
-                </div>
                 <h4 className="font-label-caps" style={{ color: 'var(--on-primary-container)', marginBottom: '8px' }}>Instructions</h4>
                 <p className="font-annotation" style={{ color: 'var(--on-primary-container)' }}>
                   Sélectionnez un établissement dans la liste pour charger sa fiche de visite et démarrer la procédure d'évaluation.
                 </p>
                 <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {[`${establishments.length} établissements disponibles`, '44 critères, 7 domaines', '100 points au total'].map(t => (
-                    <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Icon name="check_circle" style={{ fontSize: '16px', color: 'var(--primary)', fontVariationSettings: "'FILL' 1" }} />
-                      <span className="font-annotation" style={{ color: 'var(--on-primary-container)' }}>{t}</span>
-                    </div>
+                    <div key={t} className="font-annotation" style={{ color: 'var(--on-primary-container)' }}>{t}</div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Motivational quote */}
-            <div style={{ marginTop: '24px', padding: '20px 32px', border: '1px solid var(--outline-variant)', borderRadius: '8px', position: 'relative' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: '12px', height: '12px', borderTop: '1px solid var(--outline)', borderLeft: '1px solid var(--outline)' }} />
-              <div style={{ position: 'absolute', bottom: 0, right: 0, width: '12px', height: '12px', borderBottom: '1px solid var(--outline)', borderRight: '1px solid var(--outline)' }} />
-              <p className="font-annotation" style={{ color: 'var(--outline)', textAlign: 'center', fontStyle: 'italic' }}>
-                "L'accréditation est un chemin vers l'excellence, guidé par la rigueur de l'observation et la bienveillance de l'échange."
-              </p>
-            </div>
           </div>
         </div>
       </main>

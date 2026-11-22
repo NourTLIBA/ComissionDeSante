@@ -165,7 +165,7 @@ function VisitsTab() {
           </thead>
           <tbody>
             {visits.length === 0 && (
-              <tr><td style={{ ...td, fontStyle: 'italic', color: 'var(--on-surface-variant)' }} colSpan={7}>Aucune visite.</td></tr>
+              <tr><td style={{ ...td, color: 'var(--on-surface-variant)' }} colSpan={7}>Aucune visite.</td></tr>
             )}
             {visits.map((v) => (
               <tr key={v.id}>

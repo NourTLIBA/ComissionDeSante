@@ -51,7 +51,7 @@ export default function ChangePasswordPage({ user, onDone, onLogout }) {
       <img src={coatOfArms} alt="Armoiries de la République Algérienne" width="64" height="64" style={{ marginBottom: '24px' }} />
       <div className="sketch-border" style={{
         width: '100%', maxWidth: '440px', background: 'var(--surface-container-lowest)',
-        borderRadius: '12px', padding: '40px', boxShadow: '0 4px 24px rgba(111,89,85,0.08)',
+        borderRadius: '12px', padding: '40px',
       }}>
         <h1 className="font-headline-lg" style={{ color: 'var(--primary)', textAlign: 'center', marginBottom: '8px' }}>
           Nouveau mot de passe

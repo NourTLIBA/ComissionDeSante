@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import AppHeader from '../components/AppHeader';
 import DomainNav from '../components/DomainNav';
 import { DOMAINS, GRADING, getGradeFromScore, computeDomainScore, computeScore } from '../data/referentiel';
@@ -9,10 +9,10 @@ const Icon = ({ name, style, className }) => (
 
 /* ─── Grade zone display config ──────────────────────────────── */
 const GRADE_ZONES = {
-  A: { label: 'Entièrement satisfait',   range: '75–100', bg: 'var(--sage)',         color: '#5a9455' },
-  B: { label: 'Partiellement satisfait', range: '50–74',  bg: 'var(--powder-blue)', color: '#3a7ab5' },
-  C: { label: 'Insuffisant',             range: '25–49',  bg: 'var(--warm-gold)',   color: '#b58a20' },
-  D: { label: 'Non satisfait',           range: '0–24',   bg: 'var(--dusty-rose)',  color: '#ba1a1a' },
+  A: { label: 'Entièrement satisfait',   range: '75–100', bg: 'var(--sage)',         color: '#5a9455', text: '#2d5a27' },
+  B: { label: 'Partiellement satisfait', range: '50–74',  bg: 'var(--powder-blue)', color: '#3a7ab5', text: '#1a3a5c' },
+  C: { label: 'Insuffisant',             range: '25–49',  bg: 'var(--warm-gold)',   color: '#b58a20', text: '#6b4c00' },
+  D: { label: 'Non satisfait',           range: '0–24',   bg: 'var(--dusty-rose)',  color: '#ba1a1a', text: '#7a2020' },
 };
 
 /* ─── Rich Criterion info hover component ────────────────────────────── */
@@ -43,10 +43,8 @@ function CriterionInfoHover({ criterion }) {
           fontWeight: 700,
           letterSpacing: '0.04em',
           transition: 'all 0.2s ease',
-          boxShadow: '0 2px 8px rgba(111,89,85,0.08)',
         }}
       >
-        <Icon name="verified_user" style={{ fontSize: '18px', color: 'var(--primary)', fontVariationSettings: "'FILL' 1" }} />
         <span>Exigences & Éléments de Preuve (Ministère de la Santé)</span>
         <Icon name="info" style={{ fontSize: '16px', color: 'var(--outline)', fontVariationSettings: "'FILL' 1" }} />
       </button>
@@ -65,7 +63,6 @@ function CriterionInfoHover({ criterion }) {
             color: 'var(--surface)',
             borderRadius: '12px',
             padding: '20px',
-            boxShadow: '0 12px 36px rgba(0,0,0,0.35)',
             zIndex: 300,
             textAlign: 'left',
             fontFamily: 'var(--font-body)',
@@ -81,7 +78,6 @@ function CriterionInfoHover({ criterion }) {
               color: 'var(--warm-gold)', letterSpacing: '0.05em',
               marginBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.15)', paddingBottom: '8px'
             }}>
-              <Icon name="policy" style={{ fontSize: '16px', color: 'var(--warm-gold)' }} />
               {criterion.directive}
             </div>
           )}
@@ -94,17 +90,14 @@ function CriterionInfoHover({ criterion }) {
 
           {criterion.evidence && (
             <div style={{
-              background: 'rgba(255,255,255,0.07)',
-              borderRadius: '8px',
-              padding: '12px 14px',
-              borderLeft: '4px solid var(--sage)'
+              padding: '4px 0 4px 12px',
+              borderLeft: '3px solid var(--sage)'
             }}>
               <div style={{
                 fontFamily: 'var(--font-primary)', fontSize: '11px', fontWeight: 700,
                 color: 'var(--sage)', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px',
                 textTransform: 'uppercase', letterSpacing: '0.08em'
               }}>
-                <Icon name="folder_open" style={{ fontSize: '16px', color: 'var(--sage)' }} />
                 Éléments de preuve attendus :
               </div>
               <div style={{ fontSize: '12px', color: 'var(--surface)', lineHeight: 1.5 }}>
@@ -165,7 +158,6 @@ function DeckTile({ criterion, idx, isCurrent, letter, tileBg, onClick }) {
             color: 'var(--surface)',
             padding: '10px 12px',
             borderRadius: '8px',
-            boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
             zIndex: 300,
             pointerEvents: 'none',
             fontSize: '11px',
@@ -178,14 +170,13 @@ function DeckTile({ criterion, idx, isCurrent, letter, tileBg, onClick }) {
             Critère {criterion.num} — {criterion.label} ({criterion.weight} pts)
           </div>
           {criterion.directive && (
-            <div style={{ fontSize: '10px', color: 'var(--powder-blue)', fontStyle: 'italic', marginBottom: '4px' }}>
+            <div style={{ fontSize: '10px', color: 'var(--powder-blue)', marginBottom: '4px' }}>
               {criterion.directive}
             </div>
           )}
           {criterion.evidence && (
-            <div style={{ fontSize: '10px', color: 'var(--sage)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Icon name="folder_open" style={{ fontSize: '12px', color: 'var(--sage)' }} />
-              <span>{criterion.evidence.slice(0, 90)}...</span>
+            <div style={{ fontSize: '10px', color: 'var(--sage)' }}>
+              Preuves : {criterion.evidence.slice(0, 90)}…
             </div>
           )}
           {/* Arrow */}
@@ -204,192 +195,195 @@ function DeckTile({ criterion, idx, isCurrent, letter, tileBg, onClick }) {
   );
 }
 
-/* ─── Grade Slider — continuous 0-100, auto-assigns letter ──────── */
-function GradeSlider({ currentScore, onScoreChange, criterionWeight }) {
+/* ─── Grade slider ────────────────────────────────────────────────
+   Continuous 0–100 score; the A/B/C/D cote is derived from it
+   (A ≥ 75, B ≥ 50, C ≥ 25, D < 25), as in the national referential.
+   - Dragging with a pointer snaps to the five reference values
+     (0, 25, 50, 75, 100) within ±SNAP points; arrow keys stay 1 point.
+   - Each reference value is also a 44 px button, so a cote can be set
+     in a single tap, including 0 (a slider alone cannot "move" to 0). */
+const THUMB = 28;
+const SNAP = 3;
+const STOPS = [
+  { at: 0,   grade: 'D' },
+  { at: 25,  grade: 'C' },
+  { at: 50,  grade: 'B' },
+  { at: 75,  grade: 'A' },
+  { at: 100, grade: 'A' },
+];
+const snapToStop = (v) => STOPS.find(t => Math.abs(t.at - v) <= SNAP)?.at ?? v;
+const stopLeft = (at) => `calc(${THUMB / 2}px + (100% - ${THUMB}px) * ${at / 100})`;
+
+function GradeSlider({ currentScore, onScoreChange, criterionWeight, locked }) {
+  const pointerDown = useRef(false);
+  useEffect(() => {
+    const release = () => { pointerDown.current = false; };
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+    return () => {
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', release);
+    };
+  }, []);
+
   const hasValue = currentScore !== null && currentScore !== undefined;
   const displayVal = hasValue ? currentScore : 0;
   const gradeLetter = hasValue ? getGradeFromScore(currentScore) : null;
   const zone = gradeLetter ? GRADE_ZONES[gradeLetter] : null;
-
   const earnedPts = hasValue ? (criterionWeight * currentScore / 100).toFixed(2) : '—';
 
-  const handleChange = (e) => onScoreChange(Number(e.target.value));
+  const commit = (v) => { if (v !== currentScore) onScoreChange(v); };
 
-  const ticks = [
-    { at: 0,  label: '0', grade: 'D' },
-    { at: 25, label: '25', grade: 'C' },
-    { at: 50, label: '50', grade: 'B' },
-    { at: 75, label: '75', grade: 'A' },
-    { at: 100,label: '100', grade: 'A' },
-  ];
+  const handleChange = (e) => {
+    const raw = Number(e.target.value);
+    commit(pointerDown.current ? snapToStop(raw) : raw);
+  };
 
-  const trackColor = zone
-    ? `linear-gradient(to right, ${zone.color}aa 0%, ${zone.color} ${displayVal}%, var(--surface-variant) ${displayVal}%, var(--surface-variant) 100%)`
-    : `linear-gradient(to right, var(--surface-variant) 0%, var(--surface-variant) 100%)`;
+  // PageUp / PageDown jump between reference values
+  const handleKeyDown = (e) => {
+    if (e.key !== 'PageUp' && e.key !== 'PageDown') return;
+    e.preventDefault();
+    const next = e.key === 'PageUp'
+      ? STOPS.find(t => t.at > displayVal)
+      : [...STOPS].reverse().find(t => t.at < displayVal);
+    if (next) commit(next.at);
+  };
+
+  const fillColor = zone ? zone.color : 'var(--outline)';
+  const valueColor = zone ? zone.text : 'var(--outline)';
 
   return (
-    <div style={{ width: '100%', maxWidth: '480px' }}>
-      {/* Big value + grade badge row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '24px' }}>
+    <div style={{ width: '100%', maxWidth: '480px', padding: '0 8px' }}>
+      {/* Value + cote */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '16px' }}>
         <div style={{
-          fontFamily: 'var(--font-primary)',
-          fontSize: '56px',
-          fontWeight: 700,
-          lineHeight: 1,
-          color: zone ? zone.color : 'var(--outline-variant)',
-          transition: 'color 0.2s',
-          minWidth: '80px',
-          textAlign: 'center',
+          fontFamily: 'var(--font-primary)', fontSize: '56px', fontWeight: 700, lineHeight: 1,
+          color: valueColor, minWidth: '80px', textAlign: 'center',
         }}>
           {hasValue ? displayVal : '—'}
         </div>
         {gradeLetter && (
-          <div style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-          }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
             <span style={{
               width: '52px', height: '52px',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              borderRadius: '50%',
-              background: zone.bg,
-              border: `2px solid ${zone.color}`,
-              fontFamily: 'var(--font-primary)', fontWeight: 700, fontSize: '24px',
-              color: zone.color,
-              boxShadow: `0 0 0 4px ${zone.color}22`,
-              transition: 'all 0.2s',
+              borderRadius: '50%', background: zone.bg, border: `2px solid ${zone.color}`,
+              fontFamily: 'var(--font-primary)', fontWeight: 700, fontSize: '24px', color: zone.text,
             }}>
               {gradeLetter}
             </span>
-            <span style={{
-              fontFamily: 'var(--font-annotation)', fontSize: '10px',
-              color: zone.color, fontStyle: 'italic',
-            }}>
-              {zone.range}%
+            <span style={{ fontFamily: 'var(--font-annotation)', fontSize: '12px', color: zone.text }}>
+              {zone.range} %
             </span>
           </div>
         )}
       </div>
 
-      {/* Slider track */}
-      <div style={{ position: 'relative' }}>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          step={1}
-          value={displayVal}
-          onChange={handleChange}
-          aria-label="Score du critère (0 à 100)"
-          aria-valuenow={displayVal}
-          aria-valuetext={gradeLetter ? `${displayVal}% — cote ${gradeLetter}` : 'Non noté'}
-          style={{
-            width: '100%',
-            height: '8px',
-            appearance: 'none',
-            WebkitAppearance: 'none',
-            borderRadius: '999px',
-            background: trackColor,
-            outline: 'none',
-            cursor: 'pointer',
-            transition: 'background 0.15s',
-          }}
-        />
+      {/* Track */}
+      <input
+        className="grade-range"
+        type="range"
+        min={0}
+        max={100}
+        step={1}
+        value={displayVal}
+        disabled={locked}
+        onChange={handleChange}
+        onPointerDown={() => { pointerDown.current = true; }}
+        onKeyDown={handleKeyDown}
+        aria-label="Score du critère, de 0 à 100"
+        aria-valuetext={gradeLetter ? `${displayVal} sur 100, cote ${gradeLetter}, ${zone.label}` : 'Non noté'}
+        style={{
+          '--fill': `calc(${THUMB / 2}px + (100% - ${THUMB}px) * ${hasValue ? displayVal / 100 : 0})`,
+          '--fill-color': fillColor,
+          '--thumb-color': hasValue ? fillColor : 'var(--surface-container-highest)',
+          '--thumb-size': `${THUMB}px`,
+        }}
+      />
 
-        {/* Zone boundary ticks */}
-        <div style={{ position: 'relative', marginTop: '6px', height: '20px' }}>
-          {ticks.map(t => (
-            <div key={t.at} style={{
-              position: 'absolute',
-              left: `${t.at}%`,
-              transform: 'translateX(-50%)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center',
-            }}>
-              <div style={{ width: '1px', height: '6px', background: 'var(--outline-variant)', marginBottom: '2px' }} />
-              <span style={{
-                fontFamily: 'var(--font-primary)', fontSize: '9px', fontWeight: 700,
-                letterSpacing: '0.06em',
-                color: (hasValue && displayVal >= t.at && (t.at === 75 ? true : displayVal < (ticks[ticks.indexOf(t)+1]?.at ?? 101)))
-                  ? (zone?.color ?? 'var(--outline)')
-                  : 'var(--outline-variant)',
-              }}>{t.label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Zone labels */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', padding: '0 2px' }}>
-          {(['D','C','B','A']).map(g => (
-            <span key={g} style={{
-              fontFamily: 'var(--font-annotation)', fontSize: '10px',
-              color: gradeLetter === g ? GRADE_ZONES[g].color : 'var(--outline-variant)',
-              fontStyle: 'italic',
-              fontWeight: gradeLetter === g ? 700 : 400,
-              transition: 'color 0.2s',
-              flex: 1,
-              textAlign: g === 'D' ? 'left' : g === 'A' ? 'right' : 'center',
-            }}>
-              {g}
-            </span>
-          ))}
-        </div>
+      {/* Reference values: 0 · 25 · 50 · 75 · 100 */}
+      <div role="group" aria-label="Valeurs de référence" style={{ position: 'relative', height: '56px' }}>
+        {STOPS.map(t => {
+          const z = GRADE_ZONES[t.grade];
+          const active = hasValue && displayVal === t.at;
+          return (
+            <button
+              key={t.at}
+              type="button"
+              disabled={locked}
+              onClick={() => commit(t.at)}
+              aria-pressed={active}
+              aria-label={`${t.at} sur 100, cote ${t.grade}, ${z.label}`}
+              style={{
+                position: 'absolute', left: stopLeft(t.at), top: 0, transform: 'translateX(-50%)',
+                minWidth: '44px', height: '52px', padding: '0 4px',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', gap: '2px',
+                background: active ? z.bg : 'transparent',
+                border: active ? `1px solid ${z.color}` : '1px solid transparent',
+                borderRadius: '6px', cursor: locked ? 'default' : 'pointer',
+                fontFamily: 'var(--font-primary)', color: active ? z.text : 'var(--on-surface-variant)',
+              }}
+            >
+              <span aria-hidden="true" style={{ width: '1px', height: '8px', background: 'var(--outline)' }} />
+              <span style={{ fontSize: '14px', fontWeight: 700, lineHeight: 1.2 }}>{t.at}</span>
+              <span style={{ fontSize: '11px', fontWeight: 700, lineHeight: 1.2 }}>{t.grade}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Result pill */}
-      {hasValue && zone && (
+      {/* Reading of the current cote, or the scale before any grade is set */}
+      {locked ? (
+        <p className="font-annotation" style={{ marginTop: '16px', textAlign: 'center', color: 'var(--on-surface-variant)' }}>
+          Visite clôturée : les notes sont verrouillées.
+        </p>
+      ) : hasValue && zone ? (
         <div style={{
-          marginTop: '20px',
-          padding: '12px 16px',
-          background: zone.bg + '55',
-          borderRadius: '8px',
-          border: `1px solid ${zone.color}44`,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          transition: 'all 0.2s',
+          marginTop: '16px', padding: '12px 16px', textAlign: 'left',
+          border: '1px solid var(--outline-variant)', borderLeft: `4px solid ${zone.color}`, borderRadius: '4px',
         }}>
-          <div>
-            <div style={{ fontFamily: 'var(--font-primary)', fontWeight: 700, fontSize: '13px', color: zone.color }}>
-              Cote {gradeLetter} — {zone.label}
-            </div>
-            <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--on-surface-variant)', marginTop: '2px' }}>
-              {displayVal}% du poids → <strong>{earnedPts} pt{criterionWeight > 1 ? 's' : ''}</strong> sur {criterionWeight}
-            </div>
+          <div style={{ fontFamily: 'var(--font-primary)', fontWeight: 700, fontSize: '13px', color: zone.text }}>
+            Cote {gradeLetter} — {zone.label}
+          </div>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--on-surface-variant)', marginTop: '2px' }}>
+            {displayVal} % du poids : <strong>{earnedPts} pt{criterionWeight > 1 ? 's' : ''}</strong> sur {criterionWeight}
           </div>
         </div>
+      ) : (
+        <p className="font-annotation" style={{ marginTop: '16px', textAlign: 'center', color: 'var(--on-surface-variant)' }}>
+          D non satisfait · C insuffisant · B partiellement satisfait · A entièrement satisfait
+        </p>
       )}
 
-      {!hasValue && (
-        <div style={{
-          marginTop: '20px', padding: '12px 16px',
-          background: 'var(--surface-container-highest)',
-          borderRadius: '8px', border: '1px dashed var(--outline-variant)',
-          textAlign: 'center',
-          fontFamily: 'var(--font-annotation)', fontSize: '13px',
-          color: 'var(--outline)', fontStyle: 'italic',
-        }}>
-          Déplacez le curseur pour noter ce critère
-        </div>
-      )}
-
-      {/* Slider thumb styles */}
       <style>{`
-        input[type='range']::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          width: 24px; height: 24px;
-          border-radius: 50%;
-          background: ${zone ? zone.color : 'var(--primary)'};
-          border: 3px solid white;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.28);
-          cursor: pointer;
-          transition: background 0.2s, transform 0.15s;
+        .grade-range {
+          -webkit-appearance: none; appearance: none;
+          display: block; width: 100%; height: 44px; margin: 0;
+          background: transparent; cursor: pointer; touch-action: pan-y;
         }
-        input[type='range']::-webkit-slider-thumb:hover { transform: scale(1.18); }
-        input[type='range']::-moz-range-thumb {
-          width: 24px; height: 24px;
-          border-radius: 50%;
-          background: ${zone ? zone.color : 'var(--primary)'};
-          border: 3px solid white;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.28);
-          cursor: pointer;
+        .grade-range:disabled { cursor: default; opacity: 0.6; }
+        .grade-range:focus-visible { outline: none; }
+        .grade-range::-webkit-slider-runnable-track {
+          height: 10px; border-radius: 999px; border: 1px solid var(--outline);
+          background: linear-gradient(to right, var(--fill-color) var(--fill), var(--surface-variant) var(--fill));
         }
+        .grade-range::-webkit-slider-thumb {
+          -webkit-appearance: none; appearance: none;
+          width: var(--thumb-size); height: var(--thumb-size); margin-top: -10px;
+          border-radius: 50%; background: var(--thumb-color);
+          border: 3px solid #fff; box-shadow: 0 0 0 1px var(--outline);
+        }
+        .grade-range::-moz-range-track {
+          height: 8px; border-radius: 999px; border: 1px solid var(--outline); background: var(--surface-variant);
+        }
+        .grade-range::-moz-range-progress { height: 8px; border-radius: 999px; background: var(--fill-color); }
+        .grade-range::-moz-range-thumb {
+          width: calc(var(--thumb-size) - 6px); height: calc(var(--thumb-size) - 6px);
+          border-radius: 50%; background: var(--thumb-color);
+          border: 3px solid #fff; box-shadow: 0 0 0 1px var(--outline);
+        }
+        .grade-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--primary); outline-offset: 3px; }
+        .grade-range:focus-visible::-moz-range-thumb { outline: 2px solid var(--primary); outline-offset: 3px; }
       `}</style>
     </div>
   );
@@ -448,13 +442,13 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
         <div style={{ width: '100%', maxWidth: '672px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', padding: '0 8px' }}>
           <div>
             <span className="font-label-caps" style={{ color: 'var(--primary)', display: 'block', marginBottom: '4px' }}>
-              PROGRÈS — {domain.id}
+              Domaine {domain.id}
             </span>
             <div className="font-headline-md">
               Critère {currentCriterion + 1} / {totalCriteria}
             </div>
-            <p className="font-annotation" style={{ color: 'var(--on-surface-variant)', fontStyle: 'italic' }}>
-              "{domain.label}"
+            <p className="font-annotation" style={{ color: 'var(--on-surface-variant)' }}>
+              {domain.label}
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
@@ -485,23 +479,17 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
             <svg width="60" height="40" fill="none" viewBox="0 0 80 40">
               <path className="sketch-arrow-path" d="M70 20H10M10 20L25 10M10 20L25 30" stroke="var(--outline)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span className="font-annotation" style={{ color: 'var(--on-surface-variant)', transform: 'rotate(-3deg)', display: 'block' }}>Précédent</span>
+            <span className="font-annotation" style={{ color: 'var(--on-surface-variant)', display: 'block' }}>Précédent</span>
           </button>
 
           {/* Main flashcard */}
           <div className="sketch-border" style={{
             background: 'var(--surface-container-low)',
-            borderRadius: '32px',
+            borderRadius: '12px',
             padding: '48px',
             display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
             position: 'relative', overflow: 'hidden',
-            boxShadow: '0 4px 32px rgba(111,89,85,0.08)',
           }}>
-            {/* Sunburst decoration */}
-            <div style={{ position: 'absolute', top: '24px', right: '24px', opacity: 0.15 }}>
-              <Icon name="wb_sunny" style={{ fontSize: '56px' }} />
-            </div>
-
             {/* Domain emblem */}
             <div style={{
               width: '80px', height: '80px', marginBottom: '32px',
@@ -547,10 +535,11 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
               <span className="font-headline-md" style={{ color: 'var(--primary)' }}>{criterion.weight} pt{criterion.weight > 1 ? 's' : ''}</span>
             </div>
 
-            {/* ── Grade Slider (continuous 0-100) ── */}
+            {/* ── Grade slider (0–100, snaps to 0/25/50/75/100) ── */}
             <GradeSlider
               currentScore={currentScore}
               onScoreChange={handleGradeSelect}
+              locked={appState.evaluation?.status === 'finished'}
               criterionWeight={criterion.weight}
             />
           </div>
@@ -570,7 +559,7 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
             <svg width="60" height="40" fill="none" viewBox="0 0 80 40">
               <path className="sketch-arrow-path" d="M10 20H70M70 20L55 10M70 20L55 30" stroke="var(--outline)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span className="font-annotation" style={{ color: 'var(--on-surface-variant)', transform: 'rotate(3deg)', display: 'block' }}>Suivant</span>
+            <span className="font-annotation" style={{ color: 'var(--on-surface-variant)', display: 'block' }}>Suivant</span>
           </button>
         </div>
 
@@ -613,14 +602,13 @@ export default function EvaluationPage({ appState, setAppState, handleLogout, na
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
         background: 'var(--surface-container-highest)',
         borderTop: '1px solid var(--outline-variant)',
-        boxShadow: '0 -4px 16px rgba(111,89,85,0.08)',
       }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '16px 24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <span className="font-label-caps" style={{ color: 'var(--on-surface-variant)', fontSize: '10px' }}>
               Domaine {currentDomain + 1}/7 — {domain.shortLabel}
             </span>
-            <span className="font-annotation" style={{ color: 'var(--on-surface-variant)', fontStyle: 'italic' }}>
+            <span className="font-annotation" style={{ color: 'var(--on-surface-variant)' }}>
               {domain.criteria.filter(c => isCriterionGraded(c.id)).length} critères complétés sur {totalCriteria}
             </span>
           </div>

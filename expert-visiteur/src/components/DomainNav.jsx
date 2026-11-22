@@ -12,7 +12,6 @@ export default function DomainNav({ appState, onDomainSelect, activeDomainId }) 
       position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 40,
       background: 'var(--surface-container-low)',
       borderBottom: '1px solid var(--outline-variant)',
-      boxShadow: '0 2px 8px rgba(111,89,85,0.06)',
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
         <nav style={{
@@ -24,7 +23,7 @@ export default function DomainNav({ appState, onDomainSelect, activeDomainId }) 
           {DOMAINS.map((domain, idx) => {
             const ds = computeDomainScore(domain.id, grades);
             const isActive = domain.id === activeDomainId;
-            const isCompleted = domain.criteria.every(c => grades[c.id]);
+            const isCompleted = domain.criteria.every(c => grades[c.id] != null);
 
             return (
               <button

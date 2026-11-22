@@ -11,7 +11,6 @@ export default function AppHeader({ appState, handleLogout, navigate, activePage
     <header style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
       background: 'var(--background)',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
     }}>
       {/* ── App nav bar ─────────────────────────────────────────── */}
       <div style={{
