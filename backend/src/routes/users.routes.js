@@ -35,7 +35,7 @@ router.post('/', wrap(async (req, res) => {
 
 router.patch('/:id', wrap(async (req, res) => {
   const id = Number(req.params.id);
-  if (!Number.isInteger(id)) return res.status(400).json({ error: 'Identifiant invalide' });
+  if (!Number.isInteger(id) || id < 1 || id > 2147483647) return res.status(400).json({ error: 'Identifiant invalide' });
   const { name, role, active, password } = req.body || {};
 
   if (id === req.user.id && (active === false || (role && role !== 'admin'))) {

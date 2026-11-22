@@ -36,7 +36,7 @@ const loadGrades = async (evaluationId) => {
 // Loads an evaluation the caller may touch (experts: only their own; admins: any).
 async function getAccessible(req, res) {
   const id = Number(req.params.id);
-  if (!Number.isInteger(id)) { res.status(400).json({ error: 'Identifiant invalide' }); return null; }
+  if (!Number.isInteger(id) || id < 1 || id > 2147483647) { res.status(400).json({ error: 'Identifiant invalide' }); return null; }
   const { rows } = await query(`${SELECT_EVAL} WHERE e.id = $1`, [id]);
   const ev = rows[0];
   if (!ev || (req.user.role !== 'admin' && ev.expert_id !== req.user.id)) {
@@ -69,12 +69,21 @@ router.post('/', wrap(async (req, res) => {
   let id = open.rows[0]?.id;
   let created = false;
   if (!id) {
+    // two simultaneous starts: the unique index lets only one insert win, the other reads it
     const ins = await query(
-      'INSERT INTO evaluations (establishment_id, expert_id) VALUES ($1, $2) RETURNING id',
+      `INSERT INTO evaluations (establishment_id, expert_id) VALUES ($1, $2)
+       ON CONFLICT (expert_id, establishment_id) WHERE status = 'draft' DO NOTHING RETURNING id`,
       [establishmentId, req.user.id],
     );
-    id = ins.rows[0].id;
-    created = true;
+    if (ins.rows[0]) {
+      id = ins.rows[0].id;
+      created = true;
+    } else {
+      id = (await query(
+        `SELECT id FROM evaluations WHERE establishment_id = $1 AND expert_id = $2 AND status = 'draft'`,
+        [establishmentId, req.user.id],
+      )).rows[0].id;
+    }
   }
   const { rows } = await query(`${SELECT_EVAL} WHERE e.id = $1`, [id]);
   res.status(created ? 201 : 200).json({ evaluation: shape(rows[0]), grades: await loadGrades(id) });
@@ -188,11 +197,24 @@ router.post('/:id/reset', wrap(async (req, res) => {
 router.post('/:id/reopen', requireAdmin, wrap(async (req, res) => {
   const ev = await getAccessible(req, res);
   if (!ev) return;
-  await query(
-    `UPDATE evaluations SET status = 'draft', final_score = NULL, accreditation_level = NULL,
-       finished_at = NULL, updated_at = now() WHERE id = $1`,
-    [ev.id],
-  );
+  try {
+    await query(
+      `UPDATE evaluations SET status = 'draft', final_score = NULL, accreditation_level = NULL,
+         finished_at = NULL, updated_at = now() WHERE id = $1`,
+      [ev.id],
+    );
+  } catch (err) {
+    if (err.code === '23505') return res.status(409).json({ error: 'Cet expert a déjà une visite en cours pour cet établissement' });
+    throw err;
+  }
+  res.json({ ok: true });
+}));
+
+// ---- Admin: delete a visit (mistakes, test data) -------------------------------------
+router.delete('/:id', requireAdmin, wrap(async (req, res) => {
+  const ev = await getAccessible(req, res);
+  if (!ev) return;
+  await query('DELETE FROM evaluations WHERE id = $1', [ev.id]);
   res.json({ ok: true });
 }));
 

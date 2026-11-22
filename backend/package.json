@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "migrate": "node db/migrate.js",
     "seed": "node db/seed.js",
-    "sync-referentiel": "node scripts/sync-referentiel.js"
+    "sync-referentiel": "node scripts/sync-referentiel.js",
+    "test": "node --test test/api.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

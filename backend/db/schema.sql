@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS evaluations (
   finished_at          TIMESTAMPTZ,
   updated_at           TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+CREATE UNIQUE INDEX IF NOT EXISTS evaluations_one_draft_idx ON evaluations (expert_id, establishment_id) WHERE status = 'draft';
 CREATE INDEX IF NOT EXISTS evaluations_expert_idx ON evaluations (expert_id);
 CREATE INDEX IF NOT EXISTS evaluations_est_idx ON evaluations (establishment_id);
 

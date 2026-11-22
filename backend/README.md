@@ -98,9 +98,24 @@ Do this regularly as a backup too (a weekly cron job is enough). Free Neon only 
 | `PATCH /evaluations/:id` `{comment}` | owner / admin | save comment |
 | `POST /evaluations/:id/finish` | owner / admin | server computes the official score, locks the visit |
 | `POST /evaluations/:id/reset` | owner / admin | erase grades of an open visit |
-| `POST /evaluations/:id/reopen` | admin | unlock a closed visit |
+| `POST /evaluations/:id/reopen` | admin | unlock a closed visit (409 if that expert already has an open visit there) |
+| `DELETE /evaluations/:id` | admin | delete a visit |
+| `DELETE /establishments/:id` | admin | delete a hospital that has no visits |
 | `GET /evaluations/export.csv` | admin | all visits as CSV |
 | `GET /rankings` | logged in | `{scores: {hospitalId: latest closed score}}` |
+
+## Quick checks (edge cases)
+
+Ten light tests: grade limits (0, 100, 100.01, text, null…), score boundaries, locked visits,
+double start / parallel writes, other-expert access, disabled accounts, bad JSON, huge bodies.
+They work against any running API and clean up after themselves (own test expert + test hospital).
+
+```bash
+cd backend
+API_URL=https://<your-service>.onrender.com ADMIN_PASSWORD=<current admin password> npm test
+```
+
+The admin password must already have been changed on the site once (the test refuses a temporary password).
 
 ## Changing the referential
 
